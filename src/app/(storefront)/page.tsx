@@ -10,10 +10,12 @@ import {
 import { HeroCarousel } from '@/components/storefront/HeroCarousel';
 import { ProductCard } from '@/components/storefront/ProductCard';
 import { FeaturedScrollStack } from '@/components/storefront/FeaturedScrollStack';
+import { ManageableProductSection } from '@/components/storefront/ManageableProductSection';
 import {
   ArrowRight,
   Sparkles,
   Zap,
+  Flame,
   Layers,
   ChevronRight,
   CheckCircle,
@@ -75,6 +77,21 @@ export default async function StorefrontHomePage() {
       return (b.id || '').localeCompare(a.id || '');
     })
     .slice(0, 8);
+
+  // Hot deals: automatically fetch products with 30% and above discounts (sorted highest discount first)
+  const getDiscount = (price: number, compareAtPrice?: number) => {
+    if (!compareAtPrice || compareAtPrice <= price) return 0;
+    return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
+  };
+
+  const hotDeals = products
+    .filter((p) => getDiscount(p.price, p.compareAtPrice) >= 30)
+    .sort((a, b) => {
+      const discB = getDiscount(b.price, b.compareAtPrice);
+      const discA = getDiscount(a.price, a.compareAtPrice);
+      if (discB !== discA) return discB - discA;
+      return (a.id || '').localeCompare(b.id || '');
+    });
 
   const distinctMakes = ['Audi', 'Mercedes-Benz', 'BMW', 'Porsche'];
 
@@ -263,38 +280,34 @@ export default async function StorefrontHomePage() {
         <FeaturedScrollStack products={displayProducts} />
       </section>
 
-      {/* 5. New Arrivals Grid (2 cards per row on mobile) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
-              <Sparkles className="w-4 h-4" />
-              <span>Just Added</span>
-            </div>
-            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
-              New Arrivals
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-label">
-              The latest precision-engineered components and accessories across all categories.
-            </p>
-          </div>
+      {/* 5. New Arrivals Grid with Direct Edit/Modify/Delete capability (2 cards per row on mobile) */}
+      <ManageableProductSection
+        sectionId="new-arrivals"
+        title="New Arrivals"
+        subtitle="The latest precision-engineered components and accessories across all categories."
+        icon="sparkles"
+        tagText="Just Added"
+        initialProducts={newArrivals}
+        categories={categories}
+        allProductsCount={products.length}
+        adminSectionFilter="new-arrivals"
+        viewAllLink="/products?sort=newest"
+      />
 
-          <Link
-            href="/products?sort=newest"
-            className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label group"
-          >
-            <span>View All ({products.length})</span>
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 ease-out" />
-          </Link>
-        </div>
-
-        {/* 2 cards per row on mobile view */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {newArrivals.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+      {/* 6. Hot Deals Section with Direct Edit/Modify/Delete capability (Auto-fetches products with 30%+ discount, 2 cards per row on mobile) */}
+      <ManageableProductSection
+        sectionId="hot-deals"
+        title="Hot Deals"
+        subtitle="Exclusive limited-time price drops with 30% or greater discount on verified upgrades."
+        icon="flame"
+        tagText="Limited Time Offers"
+        badgeText="30%+ OFF"
+        initialProducts={hotDeals}
+        categories={categories}
+        allProductsCount={products.length}
+        adminSectionFilter="hot-deals"
+        viewAllLink="/products"
+      />
     </div>
   );
 }

@@ -17,13 +17,24 @@ import {
   Heart,
   Star,
   Check,
+  Flame,
+  Edit2,
+  Trash2,
 } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
+  showAdminControls?: boolean;
+  onEdit?: (product: Product) => void;
+  onDelete?: (product: Product) => void;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({
+  product,
+  showAdminControls = false,
+  onEdit,
+  onDelete,
+}: ProductCardProps) {
   const { selectedVehicle, openGarageModal, isHydrated } = useGarage();
   const { addItem } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -76,6 +87,12 @@ export function ProductCard({ product }: ProductCardProps) {
   // Stock status
   const inStock = product.inStock !== false && (product.stockQuantity === undefined || product.stockQuantity > 0);
 
+  // Discount percentage (calculated for hot deals & badges)
+  const discountPercent =
+    product.compareAtPrice && product.compareAtPrice > product.price
+      ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+      : 0;
+
   return (
     <div className="group relative rounded-2xl bg-white border border-[#E2E8F0] hover:border-red-300/90 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-card-hover flex flex-col overflow-hidden shadow-subtle font-sans">
       {/* Product Image Container */}
@@ -91,23 +108,65 @@ export function ProductCard({ product }: ProductCardProps) {
           className="object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
         />
 
-        {/* Top Badges: Category & Wishlist */}
+        {/* Top Badges: Category, Hot Deal & Wishlist */}
         <div className="absolute top-2 inset-x-2 sm:top-3 sm:inset-x-3 flex items-center justify-between z-10 gap-1">
-          <span className="text-[9px] sm:text-[10px] font-label font-bold uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white truncate max-w-[100px] sm:max-w-none">
-            {product.categoryName || product.category}
-          </span>
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-label font-bold uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white truncate max-w-[85px] sm:max-w-none">
+              {product.categoryName || product.category}
+            </span>
+            {discountPercent >= 30 && (
+              <span className="flex items-center space-x-0.5 text-[9px] sm:text-[10px] font-label font-black uppercase tracking-wider px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md sm:rounded-lg bg-[#DC2626] text-white shadow-sm shrink-0">
+                <Flame className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-300 text-amber-300 shrink-0" />
+                <span>{discountPercent}% OFF</span>
+              </span>
+            )}
+          </div>
 
-          <button
-            onClick={handleToggleWishlist}
-            className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl backdrop-blur-md transition-all duration-200 ease-out shadow-sm hover:scale-110 active:scale-90 shrink-0 ${
-              inWishlist
-                ? 'bg-rose-50 text-[#DC2626] border border-red-200'
-                : 'bg-white/90 text-slate-400 border border-slate-200 hover:text-[#DC2626] hover:bg-white'
-            }`}
-            aria-label={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-          >
-            <Heart className={`w-3.5 h-3.5 transition-transform duration-200 ${inWishlist ? 'fill-[#DC2626] scale-110' : ''}`} />
-          </button>
+          <div className="flex items-center space-x-1 shrink-0">
+            {showAdminControls && onEdit && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit(product);
+                }}
+                className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl backdrop-blur-md bg-white/95 text-slate-700 hover:text-white hover:bg-blue-600 border border-slate-200 shadow-sm transition-all duration-200 hover:scale-110 active:scale-90 shrink-0"
+                title="Edit / Modify Product"
+                aria-label="Edit product"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {showAdminControls && onDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete(product);
+                }}
+                className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl backdrop-blur-md bg-white/95 text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 shadow-sm transition-all duration-200 hover:scale-110 active:scale-90 shrink-0"
+                title="Delete Product"
+                aria-label="Delete product"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            <button
+              onClick={handleToggleWishlist}
+              className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl backdrop-blur-md transition-all duration-200 ease-out shadow-sm hover:scale-110 active:scale-90 shrink-0 ${
+                inWishlist
+                  ? 'bg-rose-50 text-[#DC2626] border border-red-200'
+                  : 'bg-white/90 text-slate-400 border border-slate-200 hover:text-[#DC2626] hover:bg-white'
+              }`}
+              aria-label={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <Heart className={`w-3.5 h-3.5 transition-transform duration-200 ${inWishlist ? 'fill-[#DC2626] scale-110' : ''}`} />
+            </button>
+          </div>
         </div>
 
         {/* Bottom Fitment Indicator on Image */}
@@ -170,6 +229,11 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.compareAtPrice && product.compareAtPrice > product.price && (
                 <span className="text-[10px] sm:text-xs text-slate-400 line-through font-medium">
                   ₹{product.compareAtPrice.toLocaleString('en-IN')}
+                </span>
+              )}
+              {discountPercent >= 30 && (
+                <span className="text-[9px] sm:text-[10px] font-black text-[#DC2626] bg-red-50 px-1 sm:px-1.5 py-0.5 rounded border border-red-100 shrink-0">
+                  -{discountPercent}%
                 </span>
               )}
             </div>

@@ -1,7 +1,8 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   Package,
   Plus,
@@ -15,6 +16,7 @@ import {
   Car,
   CheckCircle2,
   Star,
+  Flame,
 } from 'lucide-react';
 import {
   getProducts,
@@ -33,7 +35,10 @@ import {
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { formatCurrency } from '@/lib/utils';
 
-export default function AdminProductsPage() {
+function AdminProductsContent() {
+  const searchParams = useSearchParams();
+  const initialSection = searchParams.get('section') || 'all';
+
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -43,6 +48,14 @@ export default function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedFitmentType, setSelectedFitmentType] = useState<string>('all');
+  const [selectedSection, setSelectedSection] = useState<string>(initialSection);
+
+  useEffect(() => {
+    const s = searchParams.get('section');
+    if (s) {
+      setSelectedSection(s);
+    }
+  }, [searchParams]);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -306,8 +319,20 @@ export default function AdminProductsPage() {
     }
   };
 
+  const newest8Ids = useMemo(() => {
+    return [...products]
+      .sort((a, b) => {
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        if (timeB !== timeA) return timeB - timeA;
+        return (b.id || '').localeCompare(a.id || '');
+      })
+      .slice(0, 8)
+      .map((p) => p.id);
+  }, [products]);
+
   const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
+    let result = products.filter((p) => {
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesTitle = p.title.toLowerCase().includes(q);
@@ -331,9 +356,38 @@ export default function AdminProductsPage() {
         }
       }
 
+      if (selectedSection === 'hot-deals') {
+        if (!p.compareAtPrice || p.compareAtPrice <= p.price) return false;
+        const disc = Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100);
+        if (disc < 30) return false;
+      } else if (selectedSection === 'new-arrivals') {
+        if (!newest8Ids.includes(p.id)) return false;
+      } else if (selectedSection === 'featured') {
+        if (!p.featured) return false;
+      }
+
       return true;
     });
-  }, [products, searchQuery, selectedCategory, selectedFitmentType]);
+
+    if (selectedSection === 'hot-deals') {
+      result.sort((a, b) => {
+        const discA = a.compareAtPrice && a.compareAtPrice > a.price
+          ? Math.round(((a.compareAtPrice - a.price) / a.compareAtPrice) * 100) : 0;
+        const discB = b.compareAtPrice && b.compareAtPrice > b.price
+          ? Math.round(((b.compareAtPrice - b.price) / b.compareAtPrice) * 100) : 0;
+        return discB - discA;
+      });
+    } else if (selectedSection === 'new-arrivals') {
+      result.sort((a, b) => {
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        if (timeB !== timeA) return timeB - timeA;
+        return (b.id || '').localeCompare(a.id || '');
+      });
+    }
+
+    return result;
+  }, [products, searchQuery, selectedCategory, selectedFitmentType, selectedSection, newest8Ids]);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -399,8 +453,22 @@ export default function AdminProductsPage() {
           )}
         </div>
 
+        {/* Storefront Section Filter */}
+        <div className="w-full md:w-56">
+          <select
+            value={selectedSection}
+            onChange={(e) => setSelectedSection(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#E2E8F0] text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#DC2626]"
+          >
+            <option value="all">All Sections (Entire Catalog)</option>
+            <option value="hot-deals">🔥 Hot Deals (30%+ OFF)</option>
+            <option value="new-arrivals">✨ New Arrivals</option>
+            <option value="featured">⭐ Featured Catalogue</option>
+          </select>
+        </div>
+
         {/* Category Filter */}
-        <div className="w-full md:w-52">
+        <div className="w-full md:w-48">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
@@ -416,7 +484,7 @@ export default function AdminProductsPage() {
         </div>
 
         {/* Fitment Type Filter */}
-        <div className="w-full md:w-48">
+        <div className="w-full md:w-44">
           <select
             value={selectedFitmentType}
             onChange={(e) => setSelectedFitmentType(e.target.value)}
@@ -483,9 +551,23 @@ export default function AdminProductsPage() {
                             <p className="font-semibold text-[#0F172A] truncate max-w-xs sm:max-w-sm">
                               {p.title}
                             </p>
-                            <p className="text-[11px] text-slate-500 font-mono">
-                              SKU: {p.sku}
-                            </p>
+                            <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                              <span className="text-[11px] text-slate-500 font-mono">
+                                SKU: {p.sku}
+                              </span>
+                              {p.compareAtPrice && p.compareAtPrice > p.price && Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100) >= 30 && (
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-50 text-red-700 border border-red-200">
+                                  <Flame className="w-2.5 h-2.5 fill-red-500 text-red-500" />
+                                  Hot Deal ({Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100)}% OFF)
+                                </span>
+                              )}
+                              {newest8Ids.includes(p.id) && (
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                  <Sparkles className="w-2.5 h-2.5 text-amber-600" />
+                                  New Arrival
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -757,7 +839,7 @@ export default function AdminProductsPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700">Sale Price (₹)</label>
+                    <label className="text-xs font-semibold text-slate-700">Original / Compare Price (₹)</label>
                     <input
                       type="number"
                       step="0.01"
@@ -790,6 +872,23 @@ export default function AdminProductsPage() {
                     />
                   </div>
                 </div>
+
+                {/* Live Discount Calculator in Pricing */}
+                {Number(formCompareAtPrice) > Number(formPrice) && Number(formPrice) > 0 && (
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                    <span className="text-slate-500 font-medium">Calculated Discount:</span>
+                    {Math.round(((Number(formCompareAtPrice) - Number(formPrice)) / Number(formCompareAtPrice)) * 100) >= 30 ? (
+                      <span className="flex items-center gap-1 font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full text-[11px]">
+                        <Flame className="w-3 h-3 fill-red-500 text-red-500" />
+                        {Math.round(((Number(formCompareAtPrice) - Number(formPrice)) / Number(formCompareAtPrice)) * 100)}% OFF (Qualifies for Hot Deals)
+                      </span>
+                    ) : (
+                      <span className="text-slate-700 font-semibold text-[11px]">
+                        {Math.round(((Number(formCompareAtPrice) - Number(formPrice)) / Number(formCompareAtPrice)) * 100)}% OFF (Hot Deals requires &ge; 30%)
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex items-center space-x-6 pt-1">
                   <label className="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer">
@@ -1036,5 +1135,19 @@ export default function AdminProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 text-center text-xs text-slate-500">
+          Loading catalog management...
+        </div>
+      }
+    >
+      <AdminProductsContent />
+    </Suspense>
   );
 }

@@ -326,7 +326,7 @@ export const initialProducts: Product[] = [
     description:
       'Smoked lens sequential amber LED indicators with dynamic sweeping motion and blue welcome lock glow.',
     price: 119,
-    compareAtPrice: 149,
+    compareAtPrice: 189,
     category: 'ambient-lighting',
     categoryName: 'Ambient Lighting',
     images: [
@@ -424,7 +424,7 @@ export const initialProducts: Product[] = [
     description:
       'Aggressive GT Panamericana chrome vertical fin radiator grille engineered for Mercedes-Benz C-Class W205.',
     price: 219,
-    compareAtPrice: 260,
+    compareAtPrice: 349,
     category: 'carbon-fiber-styling',
     categoryName: 'Carbon Fiber Styling',
     images: [
@@ -470,7 +470,7 @@ export const initialProducts: Product[] = [
     description:
       'A-pillar motorized rotating tweeters that extend upon ignition and synchronize with ambient LED lighting.',
     price: 279,
-    compareAtPrice: 320,
+    compareAtPrice: 429,
     category: 'audio-speakers',
     categoryName: 'Audio & Speakers',
     images: [
@@ -531,6 +531,7 @@ export const initialProducts: Product[] = [
     description:
       'Aerospace jet engine turbine vents with brushed electroplated louvers and dual-zone temperature reactive LEDs.',
     price: 249,
+    compareAtPrice: 389,
     category: 'ambient-lighting',
     categoryName: 'Ambient Lighting',
     images: [
@@ -638,7 +639,7 @@ export const initialProducts: Product[] = [
     description:
       'Full replacement carbon mirror caps with signature M aerodynamic upper wing horn styling.',
     price: 159,
-    compareAtPrice: 189,
+    compareAtPrice: 249,
     category: 'carbon-fiber-styling',
     categoryName: 'Carbon Fiber Styling',
     images: [
@@ -898,6 +899,7 @@ export const initialProducts: Product[] = [
     description:
       'Lightweight dry carbon mirror housings with exact OEM contour fitment for Porsche Macan & Cayenne.',
     price: 189,
+    compareAtPrice: 289,
     category: 'carbon-fiber-styling',
     categoryName: 'Carbon Fiber Styling',
     images: [
@@ -949,7 +951,7 @@ export const initialProducts: Product[] = [
     description:
       'CNC aviation aluminum & real carbon phone mount with N52 magnets and active semiconductor cooling.',
     price: 49,
-    compareAtPrice: 65,
+    compareAtPrice: 79,
     category: 'interior-accessories',
     categoryName: 'Interior Accessories',
     images: [
@@ -1023,7 +1025,7 @@ export const initialProducts: Product[] = [
     description:
       'Ultra-thin 1mm fiber optic light piping delivering uniform, non-glare interior ambient mood lighting across dashboard and 4 doors.',
     price: 139,
-    compareAtPrice: 169,
+    compareAtPrice: 219,
     category: 'ambient-lighting',
     categoryName: 'Ambient Lighting',
     images: [
