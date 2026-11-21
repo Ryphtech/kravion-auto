@@ -97,10 +97,8 @@ export default async function StorefrontHomePage() {
 
   return (
     <div className="space-y-12 sm:space-y-16 lg:space-y-24 pb-24 md:pb-20 font-sans">
-      {/* 1. Hero Carousel */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-6">
-        <HeroCarousel posters={posters} />
-      </div>
+      {/* 1. Full-Bleed Edge-to-Edge Hero Banner */}
+      <HeroCarousel posters={posters} />
 
       {/* 2. Vehicle Makes Quick Filter Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
