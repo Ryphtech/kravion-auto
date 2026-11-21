@@ -85,9 +85,10 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
           dimAmount={0.15}
           itemScale={isMobile ? 0.03 : 0.04}
           baseScale={isMobile ? 0.90 : 0.88}
-          tiltAmount={isMobile ? 0.5 : 1}
-          smoothScroll={true}
-          snap={true}
+          tiltAmount={0}
+          blurAmount={0}
+          smoothScroll={false}
+          snap={false}
           useWindowScroll={false}
           className="h-full"
         >

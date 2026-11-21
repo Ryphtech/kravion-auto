@@ -169,8 +169,14 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       return true;
     };
 
-    const update = () => {
-      frame = 0;
+    let cachedHeights: number[] = [];
+    let cachedStackTop = 0;
+    let cachedOffset = 0;
+    let cachedPadTop = 0;
+    let cachedEndHeight = 0;
+    let layoutDone = false;
+
+    const computeLayout = () => {
       const settings = settingsRef.current;
       const slots = Array.from(inner.children).filter((child) =>
         child.hasAttribute('data-stack-slot')
@@ -181,40 +187,66 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       const viewTop = windowed
         ? 0
         : root.getBoundingClientRect().top + root.clientTop;
-      const stackTop = resolveOffset(settings.stackPosition, viewHeight);
-      const offset = settings.itemStackDistance;
-      const heights = slots.map((slot) => slot.offsetHeight);
-      const tops = slots.map((slot) => slot.getBoundingClientRect().top);
-      const lastPin = stackTop + (slots.length - 1) * offset;
-      const padTop = windowed ? 0 : stackTop;
-      const endHeight =
+      cachedStackTop = resolveOffset(settings.stackPosition, viewHeight);
+      cachedOffset = settings.itemStackDistance;
+      cachedHeights = slots.map((slot) => slot.offsetHeight);
+      const lastPin = cachedStackTop + (slots.length - 1) * cachedOffset;
+      cachedPadTop = windowed ? 0 : cachedStackTop;
+      cachedEndHeight =
         settings.holdDistance +
         (windowed
           ? 0
-          : Math.max(0, viewHeight - lastPin - heights[heights.length - 1]));
+          : Math.max(
+              0,
+              viewHeight -
+                lastPin -
+                (cachedHeights[cachedHeights.length - 1] || 0)
+            ));
 
-      let moved = write('padTop', padTop, (value: number) => {
-        inner.style.paddingTop = `${value}px`;
-      });
-      moved =
-        write('endHeight', endHeight, (value: number) => {
-          end.style.height = `${value}px`;
-        }) || moved;
+      inner.style.paddingTop = `${cachedPadTop}px`;
+      end.style.height = `${cachedEndHeight}px`;
 
       let flow =
-        inner.getBoundingClientRect().top - viewTop + readScroll() + padTop;
-      points = heights.map((height, i) => {
-        const point = flow - stackTop - i * offset;
+        inner.getBoundingClientRect().top -
+        viewTop +
+        readScroll() +
+        cachedPadTop;
+      points = cachedHeights.map((height, i) => {
+        const point = flow - cachedStackTop - i * cachedOffset;
         flow += height + settings.itemDistance;
         return point;
       });
-      reach = Math.max(40, (heights[0] + settings.itemDistance - offset) / 2);
+      reach = Math.max(
+        40,
+        ((cachedHeights[0] || 0) + settings.itemDistance - cachedOffset) / 2
+      );
+      layoutDone = true;
+    };
+
+    const update = () => {
+      frame = 0;
+      const settings = settingsRef.current;
+      const slots = Array.from(inner.children).filter((child) =>
+        child.hasAttribute('data-stack-slot')
+      ) as HTMLElement[];
+      if (!settings || !slots.length) return;
+
+      if (!layoutDone) computeLayout();
+
+      const viewHeight = windowed ? window.innerHeight : root.clientHeight;
+      const viewTop = windowed
+        ? 0
+        : root.getBoundingClientRect().top + root.clientTop;
+      const stackTop = cachedStackTop || resolveOffset(settings.stackPosition, viewHeight);
+      const offset = cachedOffset || settings.itemStackDistance;
+      const heights = cachedHeights.length ? cachedHeights : slots.map((slot) => slot.offsetHeight);
+      const tops = slots.map((slot) => slot.getBoundingClientRect().top);
 
       const depths = slots.map(() => 0);
       let lastCover = 0;
       for (let j = 1; j < slots.length; j++) {
         const pinBefore = viewTop + stackTop + (j - 1) * offset;
-        const start = pinBefore + heights[j - 1];
+        const start = pinBefore + (heights[j - 1] || 0);
         const span = Math.max(1, start - pinBefore - offset);
         const cover = Math.min(1, Math.max(0, (start - tops[j]) / span));
         for (let i = 0; i < j; i++) depths[i] += cover;
@@ -235,16 +267,24 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         const turn = lean * settings.rotationAmount * (i % 2 ? -1 : 1);
         const blur = depth * settings.blurAmount;
         const dim = 1 - Math.pow(1 - dimStep, depth);
+
         const transform =
           depth < 0.0005
             ? ''
-            : `perspective(1200px) rotateX(${tilt.toFixed(2)}deg) rotate(${turn.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
+            : settings.tiltAmount > 0 || settings.rotationAmount > 0
+            ? `perspective(1200px) rotateX(${tilt.toFixed(2)}deg) rotate(${turn.toFixed(2)}deg) scale(${scale.toFixed(4)})`
+            : `translateZ(0) scale(${scale.toFixed(4)})`;
+
         write(`transform${i}`, transform, (value: string) => {
           card.style.transform = value;
         });
-        write(`filter${i}`, blur > 0.01 ? `blur(${blur.toFixed(2)}px)` : '', (value: string) => {
-          card.style.filter = value;
-        });
+
+        if (settings.blurAmount > 0) {
+          write(`filter${i}`, blur > 0.01 ? `blur(${blur.toFixed(2)}px)` : '', (value: string) => {
+            card.style.filter = value;
+          });
+        }
+
         write(`dim${i}`, dim.toFixed(3), (value: string) => {
           card.style.setProperty('--scroll-stack-dim', value);
         });
@@ -255,8 +295,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         complete = done;
         if (done) settings.onStackComplete?.();
       }
-
-      if (moved) schedule();
     };
 
     const schedule = () => {
@@ -317,17 +355,27 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 
     const onScroll = () => {
       schedule();
-      if (!gliding) settleSoon();
+      if (!gliding && settingsRef.current?.snap) settleSoon();
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (
-        !settingsRef.current?.smoothScroll ||
-        motion.matches ||
-        event.defaultPrevented ||
-        event.ctrlKey
-      )
+      const settings = settingsRef.current;
+      if (!settings?.smoothScroll) {
+        // Native wheel handling: no lag, off-thread scrolling
+        if (!windowed && root) {
+          const delta = event.deltaY;
+          const current = root.scrollTop;
+          const max = maxScroll();
+          if (delta > 0 && current >= max - 1) {
+            window.scrollBy({ top: delta, behavior: 'auto' });
+          } else if (delta < 0 && current <= 1) {
+            window.scrollBy({ top: delta, behavior: 'auto' });
+          }
+        }
         return;
+      }
+
+      if (motion.matches || event.defaultPrevented || event.ctrlKey) return;
       if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
       const page = windowed ? window.innerHeight : root.clientHeight;
       const delta =
@@ -338,81 +386,41 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         scrollsInside(event.target as HTMLElement, windowed ? document.body : root, delta)
       )
         return;
+
       const base = gliding ? goal : readScroll();
       const max = maxScroll();
 
-      // When at the bottom (last card reached) and scrolling downwards: forward to main page
       if (delta > 0 && base >= max - 1) {
-        if (!windowed) {
-          window.scrollBy({ top: delta, behavior: 'auto' });
-        }
+        if (!windowed) window.scrollBy({ top: delta, behavior: 'auto' });
         return;
       }
 
-      // When at the top (first card reached) and scrolling upwards: forward to main page
       if (delta < 0 && base <= 1) {
-        if (!windowed) {
-          window.scrollBy({ top: delta, behavior: 'auto' });
-        }
+        if (!windowed) window.scrollBy({ top: delta, behavior: 'auto' });
         return;
       }
 
-      // If wheel delta exceeds the bottom boundary, glide to max and forward remainder to window
       if (delta > 0 && base + delta > max) {
         const overflow = base + delta - max;
         event.preventDefault();
         window.clearTimeout(rest);
         glideTo(max);
-        if (!windowed && overflow > 0) {
-          window.scrollBy({ top: overflow, behavior: 'auto' });
-        }
+        if (!windowed && overflow > 0) window.scrollBy({ top: overflow, behavior: 'auto' });
         return;
       }
 
-      // If wheel delta exceeds the top boundary, glide to 0 and forward remainder to window
       if (delta < 0 && base + delta < 0) {
         const underflow = base + delta;
         event.preventDefault();
         window.clearTimeout(rest);
         glideTo(0);
-        if (!windowed && underflow < 0) {
-          window.scrollBy({ top: underflow, behavior: 'auto' });
-        }
+        if (!windowed && underflow < 0) window.scrollBy({ top: underflow, behavior: 'auto' });
         return;
       }
 
       event.preventDefault();
       window.clearTimeout(rest);
       glideTo(base + delta);
-    };
-
-    let touchStartY = 0;
-    let touchLastY = 0;
-
-    const onTouchStart = (event: TouchEvent) => {
-      if (event.touches.length === 1) {
-        touchStartY = event.touches[0].clientY;
-        touchLastY = touchStartY;
-      }
-    };
-
-    const onTouchMove = (event: TouchEvent) => {
-      if (windowed || event.touches.length !== 1) return;
-      const currentY = event.touches[0].clientY;
-      const deltaY = touchLastY - currentY;
-      touchLastY = currentY;
-
-      const current = root.scrollTop;
-      const max = maxScroll();
-
-      // At bottom and swiping downwards: chain to main page
-      if (deltaY > 0 && current >= max - 1) {
-        window.scrollBy({ top: deltaY, behavior: 'auto' });
-      }
-      // At top and swiping upwards: chain to main page
-      else if (deltaY < 0 && current <= 1) {
-        window.scrollBy({ top: deltaY, behavior: 'auto' });
-      }
     };
 
     const onPress = () => {
@@ -423,23 +431,25 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const onRelease = () => {
       if (!pressed) return;
       pressed = false;
-      settleSoon();
+      if (settingsRef.current?.snap) settleSoon();
     };
 
-    const observer = new ResizeObserver(schedule);
+    const observer = new ResizeObserver(() => {
+      computeLayout();
+      schedule();
+    });
     observer.observe(root);
-    observer.observe(inner);
     target.addEventListener('scroll', onScroll, { passive: true });
-    target.addEventListener('wheel', onWheel as any, { passive: false });
-    if (!windowed) {
-      root.addEventListener('touchstart', onTouchStart, { passive: true });
-      root.addEventListener('touchmove', onTouchMove, { passive: true });
-    }
+    target.addEventListener('wheel', onWheel as any, { passive: true });
     target.addEventListener('pointerdown', onPress, { passive: true });
     window.addEventListener('pointerup', onRelease, { passive: true });
     window.addEventListener('pointercancel', onRelease, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', () => {
+      computeLayout();
+      schedule();
+    });
     scheduleRef.current = schedule;
+    computeLayout();
     update();
 
     return () => {
@@ -449,14 +459,9 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       observer.disconnect();
       target.removeEventListener('scroll', onScroll);
       target.removeEventListener('wheel', onWheel as any);
-      if (!windowed) {
-        root.removeEventListener('touchstart', onTouchStart);
-        root.removeEventListener('touchmove', onTouchMove);
-      }
       target.removeEventListener('pointerdown', onPress);
       window.removeEventListener('pointerup', onRelease);
       window.removeEventListener('pointercancel', onRelease);
-      window.removeEventListener('resize', schedule);
       scheduleRef.current = null;
     };
   }, [useWindowScroll]);
