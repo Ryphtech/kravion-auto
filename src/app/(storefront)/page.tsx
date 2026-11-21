@@ -69,21 +69,21 @@ export default async function StorefrontHomePage() {
   const distinctMakes = ['Audi', 'Mercedes-Benz', 'BMW', 'Porsche'];
 
   return (
-    <div className="space-y-16 lg:space-y-24 pb-20 font-sans">
+    <div className="space-y-12 sm:space-y-16 lg:space-y-24 pb-24 md:pb-20 font-sans">
       {/* 1. Hero Carousel */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-6">
         <HeroCarousel posters={posters} />
       </div>
 
       {/* 2. Vehicle Makes Quick Filter Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
           <div className="space-y-1">
             <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
               <Sparkles className="w-4 h-4" />
               <span>Marque Selection</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
               Select Your Marque
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-label">
@@ -100,7 +100,7 @@ export default async function StorefrontHomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {distinctMakes.map((make) => {
             const meta = MAKE_DETAILS[make] || {
               tagline: 'Precision OEM+ Fitment',
@@ -114,7 +114,7 @@ export default async function StorefrontHomePage() {
               <Link
                 key={make}
                 href={`/products?make=${encodeURIComponent(make)}`}
-                className="group relative rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-400 transition-all duration-300 flex flex-col justify-end p-6 min-h-[240px] shadow-subtle hover:shadow-card-hover hover:-translate-y-1"
+                className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-400 transition-all duration-300 flex flex-col justify-end p-4 sm:p-6 min-h-[180px] sm:min-h-[240px] shadow-subtle hover:shadow-card-hover hover:-translate-y-1"
               >
                 {/* Background image with refined clean overlay */}
                 {meta.bgImage && (
@@ -123,7 +123,7 @@ export default async function StorefrontHomePage() {
                       src={meta.bgImage}
                       alt={make}
                       fill
-                      sizes="(max-width: 640px) 100vw, 25vw"
+                      sizes="(max-width: 640px) 50vw, 25vw"
                       className="object-cover object-center filter brightness-[0.80] contrast-105 group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/60 to-transparent" />
@@ -131,27 +131,27 @@ export default async function StorefrontHomePage() {
                 )}
 
                 {/* Card Content */}
-                <div className="relative z-10 space-y-2">
+                <div className="relative z-10 space-y-1 sm:space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-label uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold">
+                    <span className="text-[9px] sm:text-[10px] font-label uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold">
                       {meta.logoText}
                     </span>
-                    <span className="text-[11px] text-slate-300 font-label font-medium">
+                    <span className="text-[10px] sm:text-[11px] text-slate-300 font-label font-medium hidden sm:inline">
                       {modelCount} Models
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight group-hover:text-red-400 transition-colors">
+                  <h3 className="text-base sm:text-xl font-black text-white uppercase tracking-tight group-hover:text-red-400 transition-colors">
                     {make}
                   </h3>
 
-                  <p className="text-xs text-slate-200 line-clamp-1 leading-snug font-label">
+                  <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 leading-snug font-label">
                     {meta.models}
                   </p>
 
-                  <div className="pt-2 flex items-center text-xs font-bold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all">
-                    <span>Explore Products</span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  <div className="pt-1 sm:pt-2 flex items-center text-[11px] sm:text-xs font-bold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all">
+                    <span>Explore</span>
+                    <ArrowRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 ml-1" />
                   </div>
                 </div>
               </Link>
@@ -161,14 +161,14 @@ export default async function StorefrontHomePage() {
       </section>
 
       {/* 3. Categories Showcase Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
           <div className="space-y-1">
             <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
               <Layers className="w-4 h-4" />
               <span>Catalog Showcase</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
               Product Categories
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-label">
@@ -185,12 +185,12 @@ export default async function StorefrontHomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {categories.map((cat, idx) => (
             <Link
               key={cat.id}
               href={`/products?category=${cat.slug}`}
-              className="group relative rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-400 transition-all duration-300 flex flex-col justify-end p-7 min-h-[230px] shadow-subtle hover:shadow-card-hover"
+              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-400 transition-all duration-300 flex flex-col justify-end p-5 sm:p-7 min-h-[190px] sm:min-h-[230px] shadow-subtle hover:shadow-card-hover"
             >
               {/* Category Background Image */}
               {cat.imageUrl && (
@@ -207,17 +207,17 @@ export default async function StorefrontHomePage() {
               )}
 
               {/* Overlay Content */}
-              <div className="relative z-10 space-y-2">
+              <div className="relative z-10 space-y-1.5 sm:space-y-2">
                 <span className="text-[10px] font-label uppercase tracking-widest text-red-400 font-bold">
                   0{idx + 1} / Collection
                 </span>
-                <h3 className="text-xl font-extrabold text-white group-hover:text-red-400 transition-colors">
+                <h3 className="text-lg sm:text-xl font-extrabold text-white group-hover:text-red-400 transition-colors">
                   {cat.name}
                 </h3>
                 <p className="text-xs text-slate-200 line-clamp-2 leading-relaxed font-label font-normal">
                   {cat.description}
                 </p>
-                <div className="pt-2 flex items-center text-xs font-bold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all">
+                <div className="pt-1 sm:pt-2 flex items-center text-xs font-bold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all">
                   <span>Browse Category</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </div>
@@ -228,14 +228,14 @@ export default async function StorefrontHomePage() {
       </section>
 
       {/* 4. Featured & Trending Products Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
           <div className="space-y-1">
             <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
               <Zap className="w-4 h-4" />
               <span>Trending Now</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
               Featured Catalogue
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-label">
@@ -253,7 +253,7 @@ export default async function StorefrontHomePage() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {displayProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -262,14 +262,14 @@ export default async function StorefrontHomePage() {
 
       {/* 5. Brand Trust Banner in Deep Slate Luxury Style */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-[#0F172A] border border-slate-800 p-8 sm:p-14 relative overflow-hidden shadow-elevated">
+        <div className="rounded-2xl sm:rounded-3xl bg-[#0F172A] border border-slate-800 p-6 sm:p-14 relative overflow-hidden shadow-elevated">
           <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-red-600/10 to-transparent pointer-events-none" />
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center space-x-2 text-xs font-label font-bold uppercase text-red-400 bg-red-950/50 px-3.5 py-1.5 rounded-full border border-red-500/30">
-              <ShieldCheck className="w-4 h-4 text-red-400" />
+          <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center space-x-2 text-xs font-label font-bold uppercase text-red-400 bg-red-950/50 px-3 py-1.5 rounded-full border border-red-500/30">
+              <ShieldCheck className="w-4 h-4 text-red-400 shrink-0" />
               <span>Zero Risk Automotive Purchasing</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white uppercase">
+            <h2 className="text-xl sm:text-4xl font-black tracking-tight text-white uppercase">
               Direct WhatsApp Concierge Hand-Off
             </h2>
             <p className="text-xs sm:text-base text-slate-300 leading-relaxed font-label">
@@ -277,10 +277,10 @@ export default async function StorefrontHomePage() {
               vehicle specifications and ordered items are formatted into a direct WhatsApp message. Our master
               automotive engineers manually confirm fitment and shipment logistics directly with you.
             </p>
-            <div className="pt-3 flex flex-wrap items-center gap-4">
+            <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <Link
                 href="/products"
-                className="px-7 py-3.5 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-md shadow-red-500/30"
+                className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-md shadow-red-500/30 text-center"
               >
                 Browse All Upgrades
               </Link>
@@ -288,7 +288,7 @@ export default async function StorefrontHomePage() {
                 href="https://wa.me/1234567890?text=Hello%20Kravion%20Auto,%20I'd%20like%20to%20learn%20more%20about%20your%20concierge%20service."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold tracking-wide border border-white/20 transition-colors backdrop-blur-md"
+                className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold tracking-wide border border-white/20 transition-colors backdrop-blur-md text-center"
               >
                 Chat with Concierge
               </a>

@@ -12,10 +12,10 @@ export default function WishlistPage() {
   const { addItem } = useCart();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
-      <div className="flex items-center justify-between">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 pb-24 md:pb-12 font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
             My Wishlist ({count} {count === 1 ? 'item' : 'items'})
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-label">
@@ -26,7 +26,7 @@ export default function WishlistPage() {
         {count > 0 && (
           <button
             onClick={clearWishlist}
-            className="text-xs text-slate-400 hover:text-red-600 font-semibold transition-colors font-label"
+            className="text-xs text-slate-400 hover:text-red-600 font-semibold transition-colors font-label self-start sm:self-auto"
           >
             Clear Wishlist
           </button>
@@ -34,7 +34,7 @@ export default function WishlistPage() {
       </div>
 
       {count > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {items.map((product) => (
             <div
               key={product.id}

@@ -54,9 +54,9 @@ export default function CartPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 pb-24 md:pb-12 font-sans">
       <div className="space-y-1">
-        <h1 className="text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
           Shopping Cart ({totalCount} {totalCount === 1 ? 'item' : 'items'})
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 font-label">
@@ -96,61 +96,64 @@ export default function CartPage() {
                 return (
                   <div
                     key={product.id}
-                    className="p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:bg-slate-50/50 transition-colors"
+                    className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 hover:bg-slate-50/50 transition-colors"
                   >
-                    {/* Image */}
-                    <div className="relative w-24 h-20 rounded-xl overflow-hidden bg-slate-100 border border-[#E2E8F0] shrink-0">
-                      <Image
-                        src={product.featuredImage || product.images?.[0] || '/placeholder.png'}
-                        alt={product.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
+                    {/* Top block on mobile / Left block on desktop */}
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
+                      {/* Image */}
+                      <div className="relative w-20 h-16 sm:w-24 sm:h-20 rounded-xl overflow-hidden bg-slate-100 border border-[#E2E8F0] shrink-0">
+                        <Image
+                          src={product.featuredImage || product.images?.[0] || '/placeholder.png'}
+                          alt={product.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
 
-                    {/* Info */}
-                    <div className="flex-1 space-y-1 min-w-0">
-                      <span className="text-[10px] font-label font-bold uppercase tracking-wider text-[#DC2626]">
-                        {product.categoryName || product.category}
-                      </span>
-                      <Link
-                        href={`/products/${product.id}`}
-                        className="block text-sm font-extrabold text-[#0F172A] hover:text-[#DC2626] transition-colors truncate"
-                      >
-                        {product.title}
-                      </Link>
+                      {/* Info */}
+                      <div className="flex-1 space-y-1 min-w-0">
+                        <span className="text-[10px] font-label font-bold uppercase tracking-wider text-[#DC2626]">
+                          {product.categoryName || product.category}
+                        </span>
+                        <Link
+                          href={`/products/${product.id}`}
+                          className="block text-xs sm:text-sm font-extrabold text-[#0F172A] hover:text-[#DC2626] transition-colors truncate"
+                        >
+                          {product.title}
+                        </Link>
 
-                      {/* Compatibility Indicator */}
-                      <div className="flex items-center space-x-1.5 text-xs font-label">
-                        {fitment.compatible && selectedVehicle ? (
-                          <span className="text-emerald-700 flex items-center gap-1 text-[11px] font-bold">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>Fits {selectedVehicle.make} {selectedVehicle.model}</span>
-                          </span>
-                        ) : !fitment.compatible && selectedVehicle ? (
-                          <span className="text-rose-700 flex items-center gap-1 text-[11px] font-bold">
-                            <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                            <span>Fitment warning for {selectedVehicle.make} {selectedVehicle.model}</span>
-                          </span>
-                        ) : fitment.reason === 'universal' ? (
-                          <span className="text-sky-700 text-[11px] font-bold flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-sky-600" />
-                            <span>Universal Fit</span>
-                          </span>
-                        ) : (
-                          <button
-                            onClick={openGarageModal}
-                            className="text-[#DC2626] hover:text-red-700 text-[11px] font-bold flex items-center gap-1 underline underline-offset-2"
-                          >
-                            <Car className="w-3 h-3" />
-                            <span>Select vehicle to check fit</span>
-                          </button>
-                        )}
+                        {/* Compatibility Indicator */}
+                        <div className="flex items-center space-x-1.5 text-xs font-label">
+                          {fitment.compatible && selectedVehicle ? (
+                            <span className="text-emerald-700 flex items-center gap-1 text-[10px] sm:text-[11px] font-bold">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                              <span className="truncate">Fits {selectedVehicle.make} {selectedVehicle.model}</span>
+                            </span>
+                          ) : !fitment.compatible && selectedVehicle ? (
+                            <span className="text-rose-700 flex items-center gap-1 text-[10px] sm:text-[11px] font-bold">
+                              <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                              <span className="truncate">Fitment warning for {selectedVehicle.make}</span>
+                            </span>
+                          ) : fitment.reason === 'universal' ? (
+                            <span className="text-sky-700 text-[10px] sm:text-[11px] font-bold flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-sky-600 shrink-0" />
+                              <span>Universal Fit</span>
+                            </span>
+                          ) : (
+                            <button
+                              onClick={openGarageModal}
+                              className="text-[#DC2626] hover:text-red-700 text-[10px] sm:text-[11px] font-bold flex items-center gap-1 underline underline-offset-2"
+                            >
+                              <Car className="w-3 h-3 shrink-0" />
+                              <span>Select car to verify</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Quantity & Price */}
-                    <div className="flex items-center space-x-4 self-end sm:self-center">
+                    {/* Bottom Row on mobile / Right column on desktop: Quantity & Price */}
+                    <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4 w-full sm:w-auto pt-2.5 sm:pt-0 border-t border-slate-100 sm:border-0">
                       <div className="flex items-center bg-white border border-[#E2E8F0] rounded-xl shadow-sm">
                         <button
                           onClick={() => updateQuantity(product.id, quantity - 1)}
@@ -171,7 +174,7 @@ export default function CartPage() {
                         </button>
                       </div>
 
-                      <span className="w-24 text-right text-base font-black text-[#0F172A]">
+                      <span className="text-sm sm:text-base font-black text-[#0F172A] min-w-[70px] text-right">
                         ${(product.price * quantity).toFixed(2)}
                       </span>
 

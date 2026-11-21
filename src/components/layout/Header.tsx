@@ -98,24 +98,16 @@ export function Header() {
 
       {/* Main Sticky Header in Clean Light Luxury Styling */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] shadow-sm transition-all font-sans">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
           {/* Kravion Logo */}
-          <div className="flex items-center space-x-3 shrink-0">
-            <Link href="/" className="flex items-center space-x-3 group">
-              <div className="relative h-11 w-14 sm:h-12 sm:w-16 rounded-xl overflow-hidden shadow-sm border border-[#E2E8F0] group-hover:border-red-300 transition-all bg-[#040303] flex items-center justify-center shrink-0">
+          <div className="flex items-center shrink-0">
+            <Link href="/" className="flex items-center group py-1" aria-label="Kravion Auto Home">
+              <div className="relative h-9 w-auto sm:h-12 flex items-center justify-center">
                 <img
                   src="/logo.svg"
                   alt="Kravion Auto"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  className="h-9 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform"
                 />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold tracking-widest text-[#0F172A] uppercase group-hover:text-[#DC2626] transition-colors font-headline">
-                  KRAVION<span className="text-[#DC2626] font-black ml-0.5">AUTO</span>
-                </span>
-                <span className="text-[9px] uppercase tracking-widest text-slate-500 font-label font-bold -mt-1">
-                  Precision Automotive
-                </span>
               </div>
             </Link>
           </div>
@@ -189,11 +181,11 @@ export function Header() {
           </nav>
 
           {/* Right Header Actions */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-1.5 sm:space-x-3">
             {/* My Garage Button / Active Vehicle Indicator */}
             <button
               onClick={openGarageModal}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
+              className={`flex items-center space-x-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold border transition-all ${
                 selectedVehicle && isHydrated
                   ? 'bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100 shadow-sm'
                   : 'bg-slate-50 border-[#E2E8F0] text-slate-700 hover:border-red-400 hover:text-[#DC2626] hover:bg-white'
@@ -210,7 +202,8 @@ export function Header() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
                   </span>
-                  <div className="text-left flex flex-col max-w-[110px] sm:max-w-[150px] truncate">
+                  <Car className="w-3.5 h-3.5 text-emerald-700 shrink-0 sm:hidden" />
+                  <div className="text-left hidden sm:flex flex-col max-w-[120px] sm:max-w-[150px] truncate">
                     <span className="text-[10px] uppercase font-label font-bold text-emerald-700 leading-tight">
                       My Garage
                     </span>
@@ -223,7 +216,7 @@ export function Header() {
                 <>
                   <Car className="w-4 h-4 text-[#DC2626] shrink-0" />
                   <span className="hidden sm:inline font-bold">Select Vehicle</span>
-                  <span className="sm:hidden font-bold">Garage</span>
+                  <span className="sm:hidden font-bold text-[11px]">Garage</span>
                 </>
               )}
             </button>
@@ -231,16 +224,16 @@ export function Header() {
             {/* Search Toggle Shortcut */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 transition-colors shadow-sm"
+              className="p-2 sm:p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 transition-colors shadow-sm"
               aria-label="Search Catalog"
             >
               <Search className="w-4 h-4" />
             </button>
 
-            {/* Wishlist Link */}
+            {/* Wishlist Link (Desktop/Tablet) */}
             <Link
               href="/wishlist"
-              className="relative p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 transition-colors shadow-sm"
+              className="hidden sm:inline-flex relative p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 transition-colors shadow-sm"
               aria-label="Wishlist"
               title="Saved Wishlist"
             >
@@ -255,7 +248,7 @@ export function Header() {
             {/* Shopping Cart Link */}
             <Link
               href="/cart"
-              className="relative p-2.5 rounded-xl bg-red-50 border border-red-200 text-[#DC2626] hover:bg-red-100 transition-colors shadow-sm"
+              className="relative p-2 sm:p-2.5 rounded-xl bg-red-50 border border-red-200 text-[#DC2626] hover:bg-red-100 transition-colors shadow-sm"
               aria-label="Shopping Cart"
               title="View Cart"
             >
@@ -399,7 +392,13 @@ export function Header() {
 
         {/* Mobile Slide-Over Drawer in Clean Light Theme */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#E2E8F0] bg-white px-6 py-6 space-y-6 shadow-xl animate-in slide-in-from-top duration-200">
+          <>
+            <div
+              className="fixed inset-0 top-16 sm:top-20 bg-slate-900/40 backdrop-blur-sm z-30 lg:hidden animate-in fade-in duration-200"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="relative z-40 lg:hidden border-t border-[#E2E8F0] bg-white px-5 sm:px-6 py-5 sm:py-6 space-y-5 shadow-2xl max-h-[calc(100vh-5rem)] overflow-y-auto animate-in slide-in-from-top duration-200">
             {/* User Profile / Sign In Section for Mobile */}
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-[#E2E8F0]">
               {user ? (
@@ -552,6 +551,7 @@ export function Header() {
               </button>
             </div>
           </div>
+          </>
         )}
       </header>
     </>

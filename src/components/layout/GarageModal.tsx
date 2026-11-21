@@ -163,7 +163,7 @@ export function GarageModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="garage-modal-title"
@@ -175,31 +175,31 @@ export function GarageModal() {
         aria-hidden="true"
       />
 
-      <div className="relative w-full max-w-xl bg-white border border-[#E2E8F0] rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-xl bg-white border border-[#E2E8F0] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92vh] sm:max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0] bg-slate-50/60">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-[#E2E8F0] bg-slate-50/60">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-red-50 border border-red-100 text-[#DC2626]">
-              <Car className="w-5 h-5" />
+            <div className="p-2 sm:p-2.5 rounded-xl bg-red-50 border border-red-100 text-[#DC2626]">
+              <Car className="w-4 sm:w-5 h-4 sm:h-5" />
             </div>
             <div>
               <h2
                 id="garage-modal-title"
-                className="text-lg font-bold text-[#0F172A] tracking-tight flex items-center gap-2"
+                className="text-base sm:text-lg font-bold text-[#0F172A] tracking-tight flex items-center gap-1.5 sm:gap-2"
               >
                 My Garage
-                <span className="text-[10px] uppercase font-label font-bold px-2 py-0.5 rounded-full bg-red-100 text-[#DC2626] border border-red-200">
+                <span className="text-[9px] sm:text-[10px] uppercase font-label font-bold px-2 py-0.5 rounded-full bg-red-100 text-[#DC2626] border border-red-200">
                   Precision Fitment
                 </span>
               </h2>
-              <p className="text-xs text-slate-500 font-label">
+              <p className="text-[11px] sm:text-xs text-slate-500 font-label">
                 Select your vehicle to filter 100% compatible accessories & parts.
               </p>
             </div>
           </div>
           <button
             onClick={closeGarageModal}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
             aria-label="Close Garage Modal"
           >
             <X className="w-5 h-5" />
@@ -208,13 +208,13 @@ export function GarageModal() {
 
         {/* Current Active Vehicle Banner if already selected */}
         {selectedVehicle && (
-          <div className="px-6 py-3 bg-emerald-50 border-b border-emerald-200/80 flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-2.5 sm:py-3 bg-emerald-50 border-b border-emerald-200/80 flex items-center justify-between">
             <div className="flex items-center space-x-2 text-xs text-emerald-800">
-              <span className="relative flex h-2 w-2">
+              <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
               </span>
-              <span>
+              <span className="truncate">
                 Active in Garage:{' '}
                 <strong className="text-emerald-900 font-bold">
                   {selectedVehicle.make} {selectedVehicle.model} ({selectedVehicle.generation || selectedVehicle.yearRange})
@@ -223,7 +223,7 @@ export function GarageModal() {
             </div>
             <button
               onClick={handleClear}
-              className="text-xs text-slate-500 hover:text-red-600 flex items-center space-x-1 transition-colors font-medium"
+              className="text-xs text-slate-500 hover:text-red-600 flex items-center space-x-1 transition-colors font-medium shrink-0 ml-2"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear</span>
@@ -232,7 +232,7 @@ export function GarageModal() {
         )}
 
         {/* Body Content */}
-        <div className="p-6 space-y-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto">
           {/* Step Selectors */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* 1. Make */}

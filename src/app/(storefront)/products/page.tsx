@@ -269,14 +269,14 @@ function ProductsCatalogContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 pb-24 md:pb-12 font-sans">
       {/* Header Banner */}
-      <div className="space-y-2">
+      <div className="space-y-1 sm:space-y-2">
         <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
           <Sparkles className="w-4 h-4" />
           <span>Faceted Search & Discovery</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#0F172A] uppercase">
+        <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-[#0F172A] uppercase">
           Automotive Parts & Accessories
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 font-label max-w-3xl">
@@ -368,12 +368,12 @@ function ProductsCatalogContent() {
           </div>
 
           {/* Quick Cascading Make & Model Dropdowns */}
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:flex-nowrap items-center gap-2">
             {/* Make */}
             <select
               value={selectedMake}
               onChange={(e) => handleMakeChange(e.target.value)}
-              className="bg-white border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 font-semibold shadow-sm"
+              className="w-full sm:w-auto bg-white border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 font-semibold shadow-sm truncate"
             >
               <option value="">All Makes</option>
               {distinctMakes.map((m) => (
@@ -388,7 +388,7 @@ function ProductsCatalogContent() {
               value={selectedModel}
               onChange={(e) => handleModelChange(e.target.value)}
               disabled={!selectedMake}
-              className="bg-white border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 disabled:opacity-40 disabled:cursor-not-allowed font-semibold shadow-sm"
+              className="w-full sm:w-auto bg-white border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 disabled:opacity-40 disabled:cursor-not-allowed font-semibold shadow-sm truncate"
             >
               <option value="">
                 {selectedMake ? 'All Models' : 'Choose Make'}
@@ -401,11 +401,11 @@ function ProductsCatalogContent() {
             </select>
 
             {/* Sort Selector */}
-            <div className="relative">
+            <div className="relative col-span-2 sm:col-span-1">
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value)}
-                className="bg-white border border-[#E2E8F0] rounded-xl pl-3 pr-8 py-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 font-semibold appearance-none shadow-sm"
+                className="w-full sm:w-auto bg-white border border-[#E2E8F0] rounded-xl pl-3 pr-8 py-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 font-semibold appearance-none shadow-sm"
               >
                 <option value="featured">Featured First</option>
                 <option value="price-asc">Price: Low to High</option>

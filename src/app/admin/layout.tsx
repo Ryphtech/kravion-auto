@@ -106,11 +106,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             className="flex items-center space-x-3 group"
             onClick={() => setMobileSidebarOpen(false)}
           >
-            <div className="relative h-10 w-14 rounded-xl overflow-hidden shadow-sm border border-slate-700 bg-[#040303] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="relative h-10 w-auto px-2 py-1 rounded-xl overflow-hidden shadow-sm border border-slate-700 bg-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <img
                 src="/logo.svg"
                 alt="Kravion Auto"
-                className="w-full h-full object-cover"
+                className="h-8 w-auto object-contain"
               />
             </div>
             <div className="flex flex-col">
@@ -219,8 +219,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Navbar in Light Styling */}
-        <header className="h-20 px-4 sm:px-6 lg:px-8 border-b border-[#E2E8F0] bg-white/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between shadow-sm">
-          <div className="flex items-center space-x-3">
+        <header className="h-16 sm:h-20 px-3 sm:px-6 lg:px-8 border-b border-[#E2E8F0] bg-white/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between shadow-sm">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <button
               type="button"
               onClick={() => setMobileSidebarOpen(true)}
@@ -229,7 +229,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Menu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-base sm:text-lg font-black text-[#0F172A] flex items-center gap-2 uppercase tracking-wide">
+              <h1 className="text-sm sm:text-lg font-black text-[#0F172A] flex items-center gap-2 uppercase tracking-wide">
                 <span>{getPageTitle()}</span>
               </h1>
             </div>

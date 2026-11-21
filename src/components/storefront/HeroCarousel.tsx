@@ -80,7 +80,7 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
       aria-label="Hero Carousel"
     >
       {/* High-Resolution Automotive Slide Background */}
-      <div className="relative w-full h-[400px] sm:h-[480px] lg:h-[540px]">
+      <div className="relative w-full h-[360px] sm:h-[480px] lg:h-[540px]">
         {currentPoster.imageUrl ? (
           <Image
             src={currentPoster.imageUrl}
@@ -99,36 +99,36 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-black/20" />
 
         {/* Slide Content Overlay */}
-        <div className="absolute inset-0 z-10 flex flex-col justify-end sm:justify-center p-6 sm:p-12 lg:p-16 max-w-3xl">
-          <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-500">
+        <div className="absolute inset-0 z-10 flex flex-col justify-end sm:justify-center p-5 sm:p-12 lg:p-16 max-w-3xl">
+          <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-left-4 duration-500">
             {/* Tag Badge */}
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-label font-bold tracking-wider uppercase">
+            <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-[11px] sm:text-xs font-label font-bold tracking-wider uppercase">
               <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse"></span>
               <span>{currentPoster.tag || 'Bespoke Upgrade'}</span>
             </div>
 
             {/* Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
               {currentPoster.title}
             </h1>
 
             {/* Subtitle / Description */}
-            <p className="text-sm sm:text-base text-slate-200 max-w-xl leading-relaxed font-label font-normal">
+            <p className="text-xs sm:text-base text-slate-200 line-clamp-2 sm:line-clamp-none max-w-xl leading-relaxed font-label font-normal">
               {currentPoster.subtitle}
             </p>
 
             {/* Actions */}
-            <div className="pt-2 flex flex-wrap items-center gap-3">
+            <div className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
               <Link
                 href={currentPoster.linkUrl || '/products'}
-                className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-red-500/30 group/btn"
+                className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-red-500/30 group/btn"
               >
                 <span>Explore Upgrades</span>
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/products?fitsGarage=true"
-                className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 font-bold text-xs uppercase tracking-wider transition-all"
+                className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 font-bold text-xs uppercase tracking-wider transition-all"
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>Verify Fitment</span>
@@ -137,7 +137,23 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
           </div>
         </div>
 
-        {/* Carousel Arrow Navigation */}
+        {/* Carousel Arrow Navigation (Hidden on small mobile screens to keep view clean) */}
+        <div className="hidden sm:block">
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white border border-white/20 transition-all opacity-0 group-hover:opacity-100"
+            aria-label="Previous Slide"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white border border-white/20 transition-all opacity-0 group-hover:opacity-100"
+            aria-label="Next Slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
         {count > 1 && (
           <div className="hidden sm:flex absolute right-6 bottom-6 z-20 items-center space-x-2">
             <button

@@ -96,7 +96,7 @@ export function ProductDetailClient({
   const whatsappEnquiryUrl = `https://wa.me/1234567890?text=${enquiryMessage}`;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 font-sans">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8 sm:space-y-12 pb-32 md:pb-12 font-sans">
       {/* Breadcrumb Navigation */}
       <nav className="flex items-center space-x-2 text-xs text-slate-500 font-label">
         <Link href="/" className="hover:text-[#DC2626] transition-colors">
@@ -596,13 +596,62 @@ export function ProductDetailClient({
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {relatedProducts.slice(0, 4).map((relProduct) => (
               <ProductCard key={relProduct.id} product={relProduct} />
             ))}
           </div>
         </section>
       )}
+
+      {/* Mobile Sticky Add to Cart Bar */}
+      <div className="md:hidden fixed bottom-12 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#E2E8F0] px-4 py-2.5 flex items-center justify-between gap-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] animate-in slide-in-from-bottom duration-200">
+        <div className="flex flex-col">
+          <span className="text-[10px] text-slate-400 font-label uppercase font-bold">Total Price</span>
+          <span className="text-base font-black text-[#0F172A]">
+            ${(product.price * quantity).toFixed(2)}
+          </span>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <a
+            href={whatsappEnquiryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 transition-colors shadow-sm"
+            title="Ask Concierge on WhatsApp"
+            aria-label="Ask Concierge on WhatsApp"
+          >
+            <MessageCircle className="w-5 h-5 text-emerald-600" />
+          </a>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={!inStock}
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center space-x-1.5 shadow-sm ${
+              addedAnimation
+                ? 'bg-emerald-600 text-white'
+                : inStock
+                ? 'bg-[#DC2626] hover:bg-red-700 text-white'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+            }`}
+          >
+            {addedAnimation ? (
+              <>
+                <Check className="w-4 h-4" />
+                <span>Added!</span>
+              </>
+            ) : inStock ? (
+              <>
+                <ShoppingBag className="w-4 h-4" />
+                <span>Add to Cart</span>
+              </>
+            ) : (
+              <span>Out of Stock</span>
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

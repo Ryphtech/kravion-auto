@@ -123,8 +123,8 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Content Section */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3 bg-white">
-        <div className="space-y-1.5">
+      <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2.5 sm:space-y-3 bg-white">
+        <div className="space-y-1 sm:space-y-1.5">
           {/* Rating */}
           <div className="flex items-center space-x-2 text-xs font-label">
             <div className="flex items-center text-amber-500">
@@ -149,22 +149,22 @@ export function ProductCard({ product }: ProductCardProps) {
 
           {/* Product Title */}
           <Link href={`/products/${product.id}`} className="block group-hover:text-[#DC2626] transition-colors">
-            <h3 className="text-sm font-extrabold text-[#0F172A] line-clamp-2 leading-snug">
+            <h3 className="text-xs sm:text-sm font-extrabold text-[#0F172A] line-clamp-2 leading-snug">
               {product.title}
             </h3>
           </Link>
 
           {/* Description snippet */}
-          <p className="text-xs text-slate-500 line-clamp-1 leading-relaxed font-label">
+          <p className="text-xs text-slate-500 line-clamp-1 leading-relaxed font-label hidden sm:block">
             {product.description}
           </p>
         </div>
 
         {/* Price and Cart Action */}
-        <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
+        <div className="pt-2 sm:pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
           <div className="flex flex-col">
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-lg font-black text-[#0F172A]">
+              <span className="text-base sm:text-lg font-black text-[#0F172A]">
                 ${product.price.toFixed(2)}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.price && (
@@ -173,7 +173,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 </span>
               )}
             </div>
-            <span className="text-[10px] text-slate-400 font-label uppercase">
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-label uppercase">
               SKU: {product.sku || 'KRV-OEM'}
             </span>
           </div>
@@ -181,7 +181,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm ${
+            className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm ${
               addedRecently
                 ? 'bg-emerald-600 text-white'
                 : inStock

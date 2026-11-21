@@ -58,17 +58,14 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-1 md:grid-cols-5 gap-10">
         {/* Col 1: Brand Info */}
         <div className="md:col-span-2 space-y-4">
-          <div className="flex items-center space-x-3">
-            <div className="relative h-10 w-14 rounded-xl overflow-hidden shadow-sm border border-[#E2E8F0] bg-[#040303] flex items-center justify-center shrink-0">
+          <div className="flex items-center">
+            <Link href="/" className="inline-block py-1" aria-label="Kravion Auto Home">
               <img
                 src="/logo.svg"
                 alt="Kravion Auto"
-                className="w-full h-full object-cover"
+                className="h-10 sm:h-11 w-auto object-contain hover:scale-105 transition-transform"
               />
-            </div>
-            <span className="text-lg font-black tracking-widest text-[#0F172A] uppercase font-headline">
-              KRAVION<span className="text-[#DC2626] font-bold ml-0.5">AUTO</span>
-            </span>
+            </Link>
           </div>
           <p className="text-xs text-slate-500 leading-relaxed pr-6 font-label">
             Kravion Auto is the premier destination for high-end automotive styling and cabin enhancements.
@@ -165,7 +162,7 @@ export function Footer() {
 
       {/* Bottom Copyright */}
       <div className="border-t border-[#E2E8F0] bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-label gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-label gap-3">
           <p>© {currentYear} Kravion Auto Inc. All rights reserved.</p>
           <p className="flex items-center space-x-2">
             <span>Precision engineered for German luxury vehicles.</span>

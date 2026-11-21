@@ -89,12 +89,12 @@ function RegisterForm() {
           <div>
             <Link
               href="/"
-              className="inline-flex items-center justify-center h-14 w-20 rounded-2xl overflow-hidden shadow-md border border-[#E2E8F0] bg-[#040303] mb-2 hover:scale-105 transition-transform"
+              className="inline-flex items-center justify-center h-12 w-auto mb-2 hover:scale-105 transition-transform"
             >
               <img
                 src="/logo.svg"
                 alt="Kravion Auto"
-                className="w-full h-full object-cover"
+                className="h-12 w-auto object-contain"
               />
             </Link>
           </div>

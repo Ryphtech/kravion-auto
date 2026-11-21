@@ -203,14 +203,14 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 pb-24 md:pb-12 font-sans">
       {/* Page Title */}
       <div className="space-y-1">
         <div className="flex items-center space-x-2 text-xs font-label font-bold text-[#DC2626] uppercase">
           <Lock className="w-3.5 h-3.5" />
           <span>Authenticated Checkout Guard Active</span>
         </div>
-        <h1 className="text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
           Order Enquiry & WhatsApp Hand-Off
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 font-label">

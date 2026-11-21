@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { GarageModal } from '@/components/layout/GarageModal';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 export default function StorefrontLayout({ children }: { children: ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export default function StorefrontLayout({ children }: { children: ReactNode }) 
       <main className="flex-1">{children}</main>
       <Footer />
       <GarageModal />
+      <MobileBottomNav />
     </div>
   );
 }
