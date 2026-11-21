@@ -339,11 +339,80 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       )
         return;
       const base = gliding ? goal : readScroll();
-      if ((delta < 0 && base <= 0) || (delta > 0 && base >= maxScroll() - 0.5))
+      const max = maxScroll();
+
+      // When at the bottom (last card reached) and scrolling downwards: forward to main page
+      if (delta > 0 && base >= max - 1) {
+        if (!windowed) {
+          window.scrollBy({ top: delta, behavior: 'auto' });
+        }
         return;
+      }
+
+      // When at the top (first card reached) and scrolling upwards: forward to main page
+      if (delta < 0 && base <= 1) {
+        if (!windowed) {
+          window.scrollBy({ top: delta, behavior: 'auto' });
+        }
+        return;
+      }
+
+      // If wheel delta exceeds the bottom boundary, glide to max and forward remainder to window
+      if (delta > 0 && base + delta > max) {
+        const overflow = base + delta - max;
+        event.preventDefault();
+        window.clearTimeout(rest);
+        glideTo(max);
+        if (!windowed && overflow > 0) {
+          window.scrollBy({ top: overflow, behavior: 'auto' });
+        }
+        return;
+      }
+
+      // If wheel delta exceeds the top boundary, glide to 0 and forward remainder to window
+      if (delta < 0 && base + delta < 0) {
+        const underflow = base + delta;
+        event.preventDefault();
+        window.clearTimeout(rest);
+        glideTo(0);
+        if (!windowed && underflow < 0) {
+          window.scrollBy({ top: underflow, behavior: 'auto' });
+        }
+        return;
+      }
+
       event.preventDefault();
       window.clearTimeout(rest);
       glideTo(base + delta);
+    };
+
+    let touchStartY = 0;
+    let touchLastY = 0;
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (event.touches.length === 1) {
+        touchStartY = event.touches[0].clientY;
+        touchLastY = touchStartY;
+      }
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (windowed || event.touches.length !== 1) return;
+      const currentY = event.touches[0].clientY;
+      const deltaY = touchLastY - currentY;
+      touchLastY = currentY;
+
+      const current = root.scrollTop;
+      const max = maxScroll();
+
+      // At bottom and swiping downwards: chain to main page
+      if (deltaY > 0 && current >= max - 1) {
+        window.scrollBy({ top: deltaY, behavior: 'auto' });
+      }
+      // At top and swiping upwards: chain to main page
+      else if (deltaY < 0 && current <= 1) {
+        window.scrollBy({ top: deltaY, behavior: 'auto' });
+      }
     };
 
     const onPress = () => {
@@ -362,6 +431,10 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     observer.observe(inner);
     target.addEventListener('scroll', onScroll, { passive: true });
     target.addEventListener('wheel', onWheel as any, { passive: false });
+    if (!windowed) {
+      root.addEventListener('touchstart', onTouchStart, { passive: true });
+      root.addEventListener('touchmove', onTouchMove, { passive: true });
+    }
     target.addEventListener('pointerdown', onPress, { passive: true });
     window.addEventListener('pointerup', onRelease, { passive: true });
     window.addEventListener('pointercancel', onRelease, { passive: true });
@@ -376,6 +449,10 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       observer.disconnect();
       target.removeEventListener('scroll', onScroll);
       target.removeEventListener('wheel', onWheel as any);
+      if (!windowed) {
+        root.removeEventListener('touchstart', onTouchStart);
+        root.removeEventListener('touchmove', onTouchMove);
+      }
       target.removeEventListener('pointerdown', onPress);
       window.removeEventListener('pointerup', onRelease);
       window.removeEventListener('pointercancel', onRelease);

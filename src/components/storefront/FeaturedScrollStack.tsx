@@ -81,6 +81,7 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
           itemDistance={isMobile ? 65 : 90}
           itemStackDistance={isMobile ? 14 : 20}
           stackPosition={isMobile ? 10 : '6%'}
+          holdDistance={0}
           dimAmount={0.15}
           itemScale={isMobile ? 0.03 : 0.04}
           baseScale={isMobile ? 0.90 : 0.88}
