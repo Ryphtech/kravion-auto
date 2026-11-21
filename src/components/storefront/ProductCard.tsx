@@ -87,19 +87,19 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.featuredImage || product.images?.[0] || '/placeholder.png'}
           alt={product.title}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
         />
 
         {/* Top Badges: Category & Wishlist */}
-        <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10">
-          <span className="text-[10px] font-label font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white">
+        <div className="absolute top-2 inset-x-2 sm:top-3 sm:inset-x-3 flex items-center justify-between z-10 gap-1">
+          <span className="text-[9px] sm:text-[10px] font-label font-bold uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white truncate max-w-[100px] sm:max-w-none">
             {product.categoryName || product.category}
           </span>
 
           <button
             onClick={handleToggleWishlist}
-            className={`p-2 rounded-xl backdrop-blur-md transition-all duration-200 ease-out shadow-sm hover:scale-110 active:scale-90 ${
+            className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl backdrop-blur-md transition-all duration-200 ease-out shadow-sm hover:scale-110 active:scale-90 shrink-0 ${
               inWishlist
                 ? 'bg-rose-50 text-[#DC2626] border border-red-200'
                 : 'bg-white/90 text-slate-400 border border-slate-200 hover:text-[#DC2626] hover:bg-white'
@@ -111,10 +111,10 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Bottom Fitment Indicator on Image */}
-        <div className="absolute bottom-2.5 inset-x-2.5 z-10">
+        <div className="absolute bottom-2 inset-x-2 sm:bottom-2.5 sm:inset-x-2.5 z-10">
           <div
             onClick={handleFitmentClick}
-            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-[11px] font-semibold backdrop-blur-md border transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] ${fitmentBg}`}
+            className={`flex items-center space-x-1 sm:space-x-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-semibold backdrop-blur-md border transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] ${fitmentBg}`}
           >
             {fitmentIcon}
             <span className="truncate">{compatibility.label}</span>
@@ -123,25 +123,25 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Content Section */}
-      <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2.5 sm:space-y-3 bg-white">
+      <div className="p-2.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3 bg-white">
         <div className="space-y-1 sm:space-y-1.5">
           {/* Rating */}
-          <div className="flex items-center space-x-2 text-xs font-label">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 text-xs font-label">
             <div className="flex items-center text-amber-500">
-              <Star className="w-3.5 h-3.5 fill-amber-500 stroke-amber-500" />
-              <span className="ml-1 font-bold text-[#0F172A]">
+              <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-500 stroke-amber-500" />
+              <span className="ml-1 font-bold text-[#0F172A] text-[11px] sm:text-xs">
                 {(product.rating || 5.0).toFixed(1)}
               </span>
             </div>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-[10px] sm:text-[11px] text-slate-500">
               ({product.reviewCount || 12})
             </span>
             {inStock ? (
-              <span className="ml-auto text-[10px] font-label font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              <span className="ml-auto text-[9px] sm:text-[10px] font-label font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 sm:px-2 rounded-full border border-emerald-200 shrink-0">
                 In Stock
               </span>
             ) : (
-              <span className="ml-auto text-[10px] font-label font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+              <span className="ml-auto text-[9px] sm:text-[10px] font-label font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 sm:px-2 rounded-full shrink-0">
                 Backorder
               </span>
             )}
@@ -161,19 +161,19 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Price and Cart Action */}
-        <div className="pt-2 sm:pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
-          <div className="flex flex-col">
-            <div className="flex items-baseline space-x-1.5">
-              <span className="text-base sm:text-lg font-black text-[#0F172A]">
-                ₹{product.price.toFixed(2)}
+        <div className="pt-2 sm:pt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-1">
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-baseline space-x-1 sm:space-x-1.5 truncate">
+              <span className="text-sm sm:text-base md:text-lg font-black text-[#0F172A]">
+                ₹{product.price.toLocaleString('en-IN')}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.price && (
-                <span className="text-xs text-slate-400 line-through font-medium">
-                  ₹{product.compareAtPrice.toFixed(2)}
+                <span className="text-[10px] sm:text-xs text-slate-400 line-through font-medium">
+                  ₹{product.compareAtPrice.toLocaleString('en-IN')}
                 </span>
               )}
             </div>
-            <span className="text-[9px] sm:text-[10px] text-slate-400 font-label uppercase">
+            <span className="text-[8px] sm:text-[10px] text-slate-400 font-label uppercase truncate">
               SKU: {product.sku || 'KRV-OEM'}
             </span>
           </div>
@@ -181,7 +181,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out flex items-center space-x-1.5 shadow-sm hover:-translate-y-0.5 active:scale-95 ${
+            className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all duration-200 ease-out flex items-center space-x-1 sm:space-x-1.5 shadow-sm hover:-translate-y-0.5 active:scale-95 shrink-0 ${
               addedRecently
                 ? 'bg-emerald-600 text-white shadow-emerald-500/20'
                 : inStock
@@ -193,7 +193,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {addedRecently ? (
               <>
                 <Check className="w-3.5 h-3.5" />
-                <span>Added</span>
+                <span className="hidden xs:inline sm:inline">Added</span>
               </>
             ) : (
               <>

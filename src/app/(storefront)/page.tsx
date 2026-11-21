@@ -12,7 +12,6 @@ import { ProductCard } from '@/components/storefront/ProductCard';
 import { FeaturedScrollStack } from '@/components/storefront/FeaturedScrollStack';
 import {
   ArrowRight,
-  ShieldCheck,
   Sparkles,
   Zap,
   Layers,
@@ -66,6 +65,16 @@ export default async function StorefrontHomePage() {
 
   const featuredProducts = products.filter((p) => p.featured).slice(0, 8);
   const displayProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 8);
+
+  // New arrivals sorted by creation date (newest first) irrespective of category
+  const newArrivals = [...products]
+    .sort((a, b) => {
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      if (timeB !== timeA) return timeB - timeA;
+      return (b.id || '').localeCompare(a.id || '');
+    })
+    .slice(0, 8);
 
   const distinctMakes = ['Audi', 'Mercedes-Benz', 'BMW', 'Porsche'];
 
@@ -254,40 +263,36 @@ export default async function StorefrontHomePage() {
         <FeaturedScrollStack products={displayProducts} />
       </section>
 
-      {/* 5. Brand Trust Banner in Deep Slate Luxury Style */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl sm:rounded-3xl bg-[#0F172A] border border-slate-800 p-6 sm:p-14 relative overflow-hidden shadow-elevated">
-          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-red-600/10 to-transparent pointer-events-none" />
-          <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
-            <div className="inline-flex items-center space-x-2 text-xs font-label font-bold uppercase text-red-400 bg-red-950/50 px-3 py-1.5 rounded-full border border-red-500/30">
-              <ShieldCheck className="w-4 h-4 text-red-400 shrink-0" />
-              <span>Zero Risk Automotive Purchasing</span>
+      {/* 5. New Arrivals Grid (2 cards per row on mobile) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
+              <Sparkles className="w-4 h-4" />
+              <span>Just Added</span>
             </div>
-            <h2 className="text-xl sm:text-4xl font-black tracking-tight text-white uppercase">
-              Direct WhatsApp Concierge Hand-Off
+            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+              New Arrivals
             </h2>
-            <p className="text-xs sm:text-base text-slate-300 leading-relaxed font-label">
-              We never take automated credit card payments on our site. When you checkout, your complete
-              vehicle specifications and ordered items are formatted into a direct WhatsApp message. Our master
-              automotive engineers manually confirm fitment and shipment logistics directly with you.
+            <p className="text-xs sm:text-sm text-slate-500 font-label">
+              The latest precision-engineered components and accessories across all categories.
             </p>
-            <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-              <Link
-                href="/products"
-                className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-[#DC2626] hover:bg-red-700 hover:-translate-y-0.5 active:scale-95 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 ease-out shadow-md shadow-red-500/30 hover:shadow-red-500/50 text-center"
-              >
-                Browse All Upgrades
-              </Link>
-              <a
-                href="https://wa.me/1234567890?text=Hello%20Kravion%20Auto,%20I'd%20like%20to%20learn%20more%20about%20your%20concierge%20service."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-white/10 hover:bg-white/20 hover:-translate-y-0.5 active:scale-95 text-white text-xs sm:text-sm font-bold tracking-wide border border-white/20 transition-all duration-200 ease-out backdrop-blur-md text-center shadow-sm"
-              >
-                Chat with Concierge
-              </a>
-            </div>
           </div>
+
+          <Link
+            href="/products?sort=newest"
+            className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label group"
+          >
+            <span>View All ({products.length})</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 ease-out" />
+          </Link>
+        </div>
+
+        {/* 2 cards per row on mobile view */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          {newArrivals.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       </section>
     </div>
