@@ -1,0 +1,209 @@
+'use client';
+
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Product } from '@/types';
+import { useGarage } from '@/context/GarageContext';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { checkCompatibility } from '@/lib/compatibility';
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Sparkles,
+  Car,
+  ShoppingBag,
+  Heart,
+  Star,
+  Check,
+} from 'lucide-react';
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export function ProductCard({ product }: ProductCardProps) {
+  const { selectedVehicle, openGarageModal, isHydrated } = useGarage();
+  const { addItem } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+
+  const [addedRecently, setAddedRecently] = useState(false);
+
+  const inWishlist = isInWishlist(product.id);
+
+  // Compute live compatibility
+  const activeVehicle = isHydrated ? selectedVehicle : null;
+  const compatibility = checkCompatibility(product, activeVehicle);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product, 1);
+    setAddedRecently(true);
+    setTimeout(() => setAddedRecently(false), 1500);
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
+
+  const handleFitmentClick = (e: React.MouseEvent) => {
+    if (!activeVehicle) {
+      e.preventDefault();
+      e.stopPropagation();
+      openGarageModal();
+    }
+  };
+
+  // Determine fitment badge styling in light mode
+  let fitmentBg = 'bg-white/95 text-slate-700 border-slate-200 hover:border-red-400 hover:text-red-600 cursor-pointer shadow-sm';
+  let fitmentIcon = <Car className="w-3.5 h-3.5 text-[#DC2626] shrink-0" />;
+
+  if (compatibility.reason === 'universal') {
+    fitmentBg = 'bg-sky-50 text-sky-800 border-sky-200 shadow-sm';
+    fitmentIcon = <Sparkles className="w-3.5 h-3.5 text-sky-600 shrink-0" />;
+  } else if (compatibility.compatible && activeVehicle) {
+    fitmentBg = 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-sm';
+    fitmentIcon = <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />;
+  } else if (!compatibility.compatible && activeVehicle) {
+    fitmentBg = 'bg-rose-50 text-rose-800 border-rose-200 shadow-sm';
+    fitmentIcon = <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />;
+  }
+
+  // Stock status
+  const inStock = product.inStock !== false && (product.stockQuantity === undefined || product.stockQuantity > 0);
+
+  return (
+    <div className="group relative rounded-2xl bg-white border border-[#E2E8F0] hover:border-red-300 transition-all duration-300 flex flex-col overflow-hidden shadow-subtle hover:shadow-card-hover font-sans">
+      {/* Product Image Container */}
+      <Link
+        href={`/products/${product.id}`}
+        className="relative aspect-[4/3] w-full bg-slate-100 overflow-hidden block"
+      >
+        <Image
+          src={product.featuredImage || product.images?.[0] || '/placeholder.png'}
+          alt={product.title}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+        />
+
+        {/* Top Badges: Category & Wishlist */}
+        <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10">
+          <span className="text-[10px] font-label font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm">
+            {product.categoryName || product.category}
+          </span>
+
+          <button
+            onClick={handleToggleWishlist}
+            className={`p-2 rounded-xl backdrop-blur-md transition-all shadow-sm ${
+              inWishlist
+                ? 'bg-rose-50 text-[#DC2626] border border-red-200'
+                : 'bg-white/90 text-slate-400 border border-slate-200 hover:text-[#DC2626] hover:bg-white'
+            }`}
+            aria-label={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          >
+            <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-[#DC2626]' : ''}`} />
+          </button>
+        </div>
+
+        {/* Bottom Fitment Indicator on Image */}
+        <div className="absolute bottom-2.5 inset-x-2.5 z-10">
+          <div
+            onClick={handleFitmentClick}
+            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-[11px] font-semibold backdrop-blur-md border transition-all ${fitmentBg}`}
+          >
+            {fitmentIcon}
+            <span className="truncate">{compatibility.label}</span>
+          </div>
+        </div>
+      </Link>
+
+      {/* Content Section */}
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3 bg-white">
+        <div className="space-y-1.5">
+          {/* Rating */}
+          <div className="flex items-center space-x-2 text-xs font-label">
+            <div className="flex items-center text-amber-500">
+              <Star className="w-3.5 h-3.5 fill-amber-500 stroke-amber-500" />
+              <span className="ml-1 font-bold text-[#0F172A]">
+                {(product.rating || 5.0).toFixed(1)}
+              </span>
+            </div>
+            <span className="text-[11px] text-slate-500">
+              ({product.reviewCount || 12})
+            </span>
+            {inStock ? (
+              <span className="ml-auto text-[10px] font-label font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                In Stock
+              </span>
+            ) : (
+              <span className="ml-auto text-[10px] font-label font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                Backorder
+              </span>
+            )}
+          </div>
+
+          {/* Product Title */}
+          <Link href={`/products/${product.id}`} className="block group-hover:text-[#DC2626] transition-colors">
+            <h3 className="text-sm font-extrabold text-[#0F172A] line-clamp-2 leading-snug">
+              {product.title}
+            </h3>
+          </Link>
+
+          {/* Description snippet */}
+          <p className="text-xs text-slate-500 line-clamp-1 leading-relaxed font-label">
+            {product.description}
+          </p>
+        </div>
+
+        {/* Price and Cart Action */}
+        <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
+          <div className="flex flex-col">
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-lg font-black text-[#0F172A]">
+                ${product.price.toFixed(2)}
+              </span>
+              {product.compareAtPrice && product.compareAtPrice > product.price && (
+                <span className="text-xs text-slate-400 line-through font-medium">
+                  ${product.compareAtPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] text-slate-400 font-label uppercase">
+              SKU: {product.sku || 'KRV-OEM'}
+            </span>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={!inStock}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm ${
+              addedRecently
+                ? 'bg-emerald-600 text-white'
+                : inStock
+                ? 'bg-[#0F172A] hover:bg-[#DC2626] text-white'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+            }`}
+            title="Add to shopping cart"
+          >
+            {addedRecently ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                <span>Added</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-3.5 h-3.5" />
+                <span>Add</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
