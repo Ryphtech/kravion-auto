@@ -248,30 +248,33 @@ export function ManageableProductSection({
 
         {/* Action Controls & Navigation */}
         <div className="flex items-center flex-wrap gap-2 sm:gap-3 shrink-0">
-          {/* Quick Edit Mode Toggle */}
-          <button
-            type="button"
-            onClick={() => setAdminMode((prev) => !prev)}
-            className={`text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-lg border flex items-center space-x-1.5 transition-all font-label ${
-              adminMode
-                ? 'bg-red-600 text-white border-red-600 shadow-sm'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-            }`}
-            title="Toggle Edit / Modify / Delete mode for products in this section"
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>{adminMode ? 'Done Editing' : 'Edit Section'}</span>
-          </button>
+          {/* Quick Edit Mode Toggle & Admin View: Omitted for New Arrivals section */}
+          {sectionId !== 'new-arrivals' && (
+            <>
+              <button
+                type="button"
+                onClick={() => setAdminMode((prev) => !prev)}
+                className={`text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-lg border flex items-center space-x-1.5 transition-all font-label ${
+                  adminMode
+                    ? 'bg-red-600 text-white border-red-600 shadow-sm'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                }`}
+                title="Toggle Edit / Modify / Delete mode for products in this section"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <span>{adminMode ? 'Done Editing' : 'Edit Section'}</span>
+              </button>
 
-          {/* Direct Admin Catalog Filter Link */}
-          <Link
-            href={`/admin/products?section=${adminSectionFilter}`}
-            className="text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-[#DC2626] hover:border-red-300 transition-colors flex items-center space-x-1 font-label"
-            title={`Manage ${title} directly in the Admin Catalog`}
-          >
-            <ExternalLink className="w-3 h-3" />
-            <span>Admin View</span>
-          </Link>
+              <Link
+                href={`/admin/products?section=${adminSectionFilter}`}
+                className="text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-[#DC2626] hover:border-red-300 transition-colors flex items-center space-x-1 font-label"
+                title={`Manage ${title} directly in the Admin Catalog`}
+              >
+                <ExternalLink className="w-3 h-3" />
+                <span>Admin View</span>
+              </Link>
+            </>
+          )}
 
           {/* View All Storefront Link */}
           <Link

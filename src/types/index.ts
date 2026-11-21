@@ -81,6 +81,7 @@ export interface CarouselPoster {
   displayOrder: number;
   active: boolean;
   tag?: string;
+  targetDevice?: 'all' | 'desktop' | 'mobile';
 }
 
 export interface ShippingAddress {

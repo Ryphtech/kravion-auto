@@ -1067,6 +1067,7 @@ export const initialPosters: CarouselPoster[] = [
     linkUrl: '/products?category=ambient-lighting',
     displayOrder: 1,
     active: true,
+    targetDevice: 'desktop',
   },
   {
     id: 'poster-carbon-aerokits',
@@ -1079,6 +1080,7 @@ export const initialPosters: CarouselPoster[] = [
     linkUrl: '/products?category=carbon-fiber-styling',
     displayOrder: 2,
     active: true,
+    targetDevice: 'desktop',
   },
   {
     id: 'poster-audio-clarity',
@@ -1091,6 +1093,7 @@ export const initialPosters: CarouselPoster[] = [
     linkUrl: '/products?category=audio-speakers',
     displayOrder: 3,
     active: true,
+    targetDevice: 'desktop',
   },
   {
     id: 'poster-valvetronic-exhaust',
@@ -1103,6 +1106,31 @@ export const initialPosters: CarouselPoster[] = [
     linkUrl: '/products?category=performance-exhausts',
     displayOrder: 4,
     active: true,
+    targetDevice: 'desktop',
+  },
+  {
+    id: 'poster-mobile-cockpit',
+    title: 'Elevate Your Cockpit (Mobile)',
+    subtitle: 'Bespoke Ambient Lighting & Faceted Controls',
+    imageUrl:
+      'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?q=80&w=1080&auto=format&fit=crop',
+    buttonText: 'Explore Collection',
+    linkUrl: '/products?category=ambient-lighting',
+    displayOrder: 1,
+    active: true,
+    targetDevice: 'mobile',
+  },
+  {
+    id: 'poster-mobile-aerokits',
+    title: 'Pure Aerodynamic Precision (Mobile)',
+    subtitle: 'Autoclave Toray Dry Carbon Diffusers & Splitters',
+    imageUrl:
+      'https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=1080&auto=format&fit=crop',
+    buttonText: 'Shop Carbon Fiber',
+    linkUrl: '/products?category=carbon-fiber-styling',
+    displayOrder: 2,
+    active: true,
+    targetDevice: 'mobile',
   },
 ];
 

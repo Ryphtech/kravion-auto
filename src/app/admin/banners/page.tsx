@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Image as ImageIcon,
   Plus,
@@ -13,6 +13,10 @@ import {
   ExternalLink,
   Eye,
   EyeOff,
+  Monitor,
+  Smartphone,
+  Globe,
+  Info,
 } from 'lucide-react';
 import {
   getAllPosters,
@@ -25,6 +29,7 @@ import { ImageUploader } from '@/components/admin/ImageUploader';
 export default function AdminBannersPage() {
   const [banners, setBanners] = useState<CarouselPoster[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'desktop' | 'mobile' | 'all'>('desktop');
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,6 +46,7 @@ export default function AdminBannersPage() {
   const [formLinkUrl, setFormLinkUrl] = useState('/products');
   const [formOrder, setFormOrder] = useState<number | string>(1);
   const [formActive, setFormActive] = useState(true);
+  const [formTargetDevice, setFormTargetDevice] = useState<'desktop' | 'mobile' | 'all'>('desktop');
 
   const loadData = async () => {
     setLoading(true);
@@ -63,15 +69,37 @@ export default function AdminBannersPage() {
     setTimeout(() => setNotification(null), 4000);
   };
 
-  const handleOpenAddModal = () => {
+  // Device Counts
+  const desktopCount = useMemo(
+    () => banners.filter((b) => b.targetDevice === 'desktop' || b.targetDevice === 'all' || !b.targetDevice).length,
+    [banners]
+  );
+  const mobileCount = useMemo(
+    () => banners.filter((b) => b.targetDevice === 'mobile' || b.targetDevice === 'all').length,
+    [banners]
+  );
+
+  const filteredBanners = useMemo(() => {
+    if (activeTab === 'desktop') {
+      return banners.filter((b) => b.targetDevice === 'desktop' || b.targetDevice === 'all' || !b.targetDevice);
+    }
+    if (activeTab === 'mobile') {
+      return banners.filter((b) => b.targetDevice === 'mobile' || b.targetDevice === 'all');
+    }
+    return banners;
+  }, [banners, activeTab]);
+
+  const handleOpenAddModal = (presetDevice?: 'desktop' | 'mobile' | 'all') => {
+    const target = presetDevice || (activeTab === 'mobile' ? 'mobile' : 'desktop');
     setEditingBanner(null);
     setFormTitle('');
     setFormSubtitle('');
     setFormImageUrl('https://pub-bd9a15bceb394e7b95f90e4967940403.r2.dev/placeholder.webp');
     setFormButtonText('Explore Collection');
     setFormLinkUrl('/products');
-    setFormOrder(banners.length + 1);
+    setFormOrder(filteredBanners.length + 1);
     setFormActive(true);
+    setFormTargetDevice(target);
     setIsModalOpen(true);
   };
 
@@ -84,6 +112,7 @@ export default function AdminBannersPage() {
     setFormLinkUrl(b.linkUrl);
     setFormOrder(b.displayOrder);
     setFormActive(b.active);
+    setFormTargetDevice(b.targetDevice || 'desktop');
     setIsModalOpen(true);
   };
 
@@ -105,12 +134,13 @@ export default function AdminBannersPage() {
         linkUrl: formLinkUrl.trim() || '/products',
         displayOrder: Number(formOrder) || 1,
         active: formActive,
+        targetDevice: formTargetDevice,
       };
 
       await savePoster(payload);
       await loadData();
       setIsModalOpen(false);
-      showNotification('success', `Banner "${payload.title}" saved.`);
+      showNotification('success', `Banner "${payload.title}" saved for ${formTargetDevice === 'all' ? 'All Devices' : formTargetDevice === 'mobile' ? 'Mobile' : 'Desktop'}.`);
     } catch (err: any) {
       console.error('Save banner error:', err);
       showNotification('error', err.message || 'Failed to save poster.');
@@ -154,18 +184,102 @@ export default function AdminBannersPage() {
             <span>Homepage Hero Carousel Banners</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Configure featured campaign slides, high-resolution R2 artwork, and target destinations
+            Configure separate responsive carousels for Desktop wide-screens and Mobile mobile devices
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs tracking-wider uppercase bg-[#DC2626] hover:bg-red-700 text-white shadow-subtle transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Carousel Slide</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => handleOpenAddModal(activeTab === 'mobile' ? 'mobile' : 'desktop')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs tracking-wider uppercase bg-[#DC2626] hover:bg-red-700 text-white shadow-subtle transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            <span>
+              {activeTab === 'mobile'
+                ? 'Add Mobile Slide'
+                : activeTab === 'desktop'
+                ? 'Add Desktop Slide'
+                : 'Add Carousel Slide'}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Device Separation Tabs */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E2E8F0] pb-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveTab('desktop')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'desktop'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'bg-white border border-[#E2E8F0] text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+          >
+            <Monitor className="w-3.5 h-3.5" />
+            <span>Desktop Carousels</span>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                activeTab === 'desktop' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+              }`}
+            >
+              {desktopCount}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('mobile')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'mobile'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'bg-white border border-[#E2E8F0] text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Mobile Carousels</span>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                activeTab === 'mobile' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+              }`}
+            >
+              {mobileCount}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('all')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'all'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'bg-white border border-[#E2E8F0] text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>All Devices</span>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                activeTab === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+              }`}
+            >
+              {banners.length}
+            </span>
+          </button>
+        </div>
+
+        <div className="text-[11px] text-slate-500 font-label flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 text-[#DC2626]" />
+          <span>
+            {activeTab === 'mobile'
+              ? 'Mobile hero renders only pure visual images without text overlay.'
+              : activeTab === 'desktop'
+              ? 'Desktop hero renders full-width landscape banner with typography overlays.'
+              : 'Managing all hero carousel assets across desktop and mobile screens.'}
+          </span>
+        </div>
       </div>
 
       {/* Notification Toast */}
@@ -194,6 +308,7 @@ export default function AdminBannersPage() {
               <tr>
                 <th className="px-5 py-3.5">Banner Preview</th>
                 <th className="px-4 py-3.5">Headline & Subtitle</th>
+                <th className="px-4 py-3.5 text-center">Target Device</th>
                 <th className="px-4 py-3.5">Call to Action</th>
                 <th className="px-4 py-3.5 text-center">Order</th>
                 <th className="px-4 py-3.5 text-center">Status</th>
@@ -203,18 +318,22 @@ export default function AdminBannersPage() {
             <tbody className="divide-y divide-[#E2E8F0] text-slate-700">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                     Loading banners...
                   </td>
                 </tr>
-              ) : banners.length === 0 ? (
+              ) : filteredBanners.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                    No carousel banners configured.
+                  <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
+                    No carousel banners found for{' '}
+                    <span className="font-bold">
+                      {activeTab === 'desktop' ? 'Desktop' : activeTab === 'mobile' ? 'Mobile' : 'All Devices'}
+                    </span>
+                    . Click &quot;Add {activeTab === 'mobile' ? 'Mobile' : 'Desktop'} Slide&quot; above to create one.
                   </td>
                 </tr>
               ) : (
-                banners.map((b) => (
+                filteredBanners.map((b) => (
                   <tr key={b.id} className="hover:bg-slate-50/80 transition-colors">
                     {/* Thumbnail Preview */}
                     <td className="px-5 py-3.5">
@@ -233,6 +352,26 @@ export default function AdminBannersPage() {
                       <p className="text-slate-500 text-[11px] max-w-sm truncate mt-0.5">
                         {b.subtitle}
                       </p>
+                    </td>
+
+                    {/* Target Device */}
+                    <td className="px-4 py-3.5 text-center">
+                      {b.targetDevice === 'mobile' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                          <Smartphone className="w-3 h-3 text-purple-600" />
+                          <span>Mobile</span>
+                        </span>
+                      ) : b.targetDevice === 'all' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <Globe className="w-3 h-3 text-emerald-600" />
+                          <span>Both</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
+                          <Monitor className="w-3 h-3 text-sky-600" />
+                          <span>Desktop</span>
+                        </span>
+                      )}
                     </td>
 
                     {/* CTA */}
@@ -312,7 +451,7 @@ export default function AdminBannersPage() {
               <h3 className="text-base font-bold text-[#0F172A]">Confirm Slide Deletion</h3>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Are you sure you want to remove this hero slide from the homepage carousel?
+              Are you sure you want to remove this hero slide from the carousel?
             </p>
             <div className="flex items-center justify-end space-x-3 pt-2">
               <button
@@ -353,6 +492,69 @@ export default function AdminBannersPage() {
             </div>
 
             <form onSubmit={handleSave} className="p-6 space-y-4">
+              {/* Target Device Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700 block">
+                  Target Carousel Device <span className="text-[#DC2626]">*</span>
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormTargetDevice('desktop')}
+                    className={`flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all ${
+                      formTargetDevice === 'desktop'
+                        ? 'bg-sky-50 border-sky-500 text-sky-800 shadow-sm'
+                        : 'bg-white border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Monitor className="w-4 h-4 text-sky-600" />
+                    <span>Desktop Only</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormTargetDevice('mobile')}
+                    className={`flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all ${
+                      formTargetDevice === 'mobile'
+                        ? 'bg-purple-50 border-purple-500 text-purple-800 shadow-sm'
+                        : 'bg-white border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Smartphone className="w-4 h-4 text-purple-600" />
+                    <span>Mobile Only</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormTargetDevice('all')}
+                    className={`flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all ${
+                      formTargetDevice === 'all'
+                        ? 'bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm'
+                        : 'bg-white border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Globe className="w-4 h-4 text-emerald-600" />
+                    <span>Both Devices</span>
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-slate-500 mt-1">
+                  {formTargetDevice === 'mobile' ? (
+                    <span className="text-purple-700 font-medium">
+                      📱 On mobile view, the hero card displays only the vehicle photo (no text overlay). Recommend portrait or centered car photos.
+                    </span>
+                  ) : formTargetDevice === 'desktop' ? (
+                    <span className="text-sky-700 font-medium">
+                      🖥️ On desktop, this slide displays full-bleed 16:9 artwork with the headline, features, and buttons.
+                    </span>
+                  ) : (
+                    <span className="text-emerald-700 font-medium">
+                      🌐 This slide will be included in both desktop and mobile hero rotations.
+                    </span>
+                  )}
+                </p>
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-700">
                   Headline Title <span className="text-[#DC2626]">*</span>
@@ -430,7 +632,7 @@ export default function AdminBannersPage() {
               {/* R2 Image Uploader */}
               <div className="space-y-1.5 pt-2 border-t border-[#E2E8F0]">
                 <ImageUploader
-                  label="Hero Slide Background Artwork (Cloudflare R2)"
+                  label={`Hero Slide Artwork (${formTargetDevice === 'mobile' ? 'Mobile / Portrait' : 'Desktop / Landscape'})`}
                   folder="banners"
                   value={formImageUrl}
                   onChange={(url) => setFormImageUrl(url)}

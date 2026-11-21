@@ -643,6 +643,8 @@ export async function savePoster(poster: Partial<CarouselPoster>): Promise<strin
     linkUrl: poster.linkUrl || '/products',
     displayOrder: poster.displayOrder ?? inMemoryPosters.length + 1,
     active: poster.active ?? true,
+    tag: poster.tag,
+    targetDevice: poster.targetDevice || 'desktop',
   };
 
   const existingIdx = inMemoryPosters.findIndex((p) => p.id === id);

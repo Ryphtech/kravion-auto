@@ -16,9 +16,6 @@ import {
   X,
   Shield,
   LogOut,
-  Sparkles,
-  Cloud,
-  Database,
   ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -233,25 +230,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <span>{getPageTitle()}</span>
               </h1>
             </div>
-          </div>
-
-          {/* Quick Status / Environment Indicators */}
-          <div className="flex items-center space-x-2 sm:space-x-4 font-label">
-            <div className="hidden sm:flex items-center space-x-2 text-xs px-3 py-1.5 rounded-full bg-slate-50 border border-[#E2E8F0] text-slate-600">
-              <Cloud className="w-3.5 h-3.5 text-sky-600" />
-              <span>R2: <span className="text-[#0F172A] font-bold font-mono">kravion-auto</span></span>
-            </div>
-            <div className="hidden sm:flex items-center space-x-2 text-xs px-3 py-1.5 rounded-full bg-slate-50 border border-[#E2E8F0] text-slate-600">
-              <Database className="w-3.5 h-3.5 text-[#DC2626]" />
-              <span>Firestore: <span className="text-emerald-700 font-bold">Ready</span></span>
-            </div>
-            <Link
-              href="/"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs text-[#DC2626] hover:text-white font-bold px-3.5 py-1.5 rounded-xl border border-red-200 hover:bg-[#DC2626] transition-all shadow-sm"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Storefront</span>
-            </Link>
           </div>
         </header>
 

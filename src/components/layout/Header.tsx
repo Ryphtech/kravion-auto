@@ -435,25 +435,39 @@ export function Header() {
 
           {/* Quick Search Dropdown Bar */}
           {searchOpen && (
-            <div className="border-t border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 animate-in slide-in-from-top-2 duration-150 shadow-inner">
+            <div
+              className={`px-4 py-3 animate-in slide-in-from-top-2 duration-150 transition-all ${
+                isTransparent
+                  ? 'bg-black/30 backdrop-blur-md border-t border-white/10'
+                  : 'border-t border-[#E2E8F0] bg-[#F8FAFC] shadow-inner'
+              }`}
+            >
               <form
                 onSubmit={handleSearchSubmit}
                 className="max-w-2xl mx-auto flex items-center gap-2"
               >
                 <div className="relative flex-1">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Search
+                    className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${
+                      isTransparent ? 'text-white/70' : 'text-slate-400'
+                    }`}
+                  />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search carbon splitters, ambient cockpits, matrix lights, audio..."
-                    className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all shadow-sm"
+                    className={`w-full rounded-xl pl-10 pr-4 py-2.5 text-sm transition-all shadow-sm focus:outline-none focus:ring-2 ${
+                      isTransparent
+                        ? 'bg-white/10 border border-white/20 text-white placeholder-slate-300 focus:bg-white/15 focus:border-red-500 focus:ring-red-500/30 backdrop-blur-md'
+                        : 'bg-white border border-[#E2E8F0] text-[#0F172A] placeholder-slate-400 focus:border-[#DC2626] focus:ring-red-500/20'
+                    }`}
                     autoFocus
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#DC2626] hover:bg-red-700 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-colors shadow-sm"
+                  className="px-5 py-2.5 bg-[#DC2626] hover:bg-red-700 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-colors shadow-sm shrink-0"
                 >
                   Search
                 </button>
