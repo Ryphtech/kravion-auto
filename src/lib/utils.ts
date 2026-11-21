@@ -5,13 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(price: number, currency: string = '$'): string {
+export function formatPrice(price: number, currency: string = '₹'): string {
   return `${currency}${price.toFixed(2)}`;
 }
 
 export function formatCurrency(
   amount?: number | null,
-  currency: string = '$'
+  currency: string = '₹'
 ): string {
   const safeAmount =
     typeof amount === 'number' && !isNaN(amount) ? amount : 0;

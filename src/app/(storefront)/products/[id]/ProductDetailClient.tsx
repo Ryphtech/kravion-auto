@@ -91,7 +91,7 @@ export function ProductDetailClient({
 
   // WhatsApp Enquiry Link
   const enquiryMessage = encodeURIComponent(
-    `Hello Kravion Auto Concierge! I have a question regarding: "${product.title}" (SKU: ${product.sku || 'N/A'}, Price: $${product.price}). Can you verify fitment for my vehicle?`
+    `Hello Kravion Auto Concierge! I have a question regarding: "${product.title}" (SKU: ${product.sku || 'N/A'}, Price: ₹${product.price}). Can you verify fitment for my vehicle?`
   );
   const whatsappEnquiryUrl = `https://wa.me/1234567890?text=${enquiryMessage}`;
 
@@ -247,18 +247,18 @@ export function ProductDetailClient({
           <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-baseline justify-between shadow-subtle">
             <div className="flex items-baseline space-x-3">
               <span className="text-3xl font-black text-[#0F172A] tracking-tight">
-                ${product.price.toFixed(2)}
+                ₹{product.price.toFixed(2)}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.price && (
                 <span className="text-sm text-slate-400 line-through font-medium">
-                  ${product.compareAtPrice.toFixed(2)}
+                  ₹{product.compareAtPrice.toFixed(2)}
                 </span>
               )}
             </div>
 
             {product.compareAtPrice && product.compareAtPrice > product.price && (
               <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-red-100 text-[#DC2626] border border-red-200 font-label">
-                Save ${(product.compareAtPrice - product.price).toFixed(2)}
+                Save ₹{(product.compareAtPrice - product.price).toFixed(2)}
               </span>
             )}
           </div>
@@ -389,23 +389,23 @@ export function ProductDetailClient({
             <button
               onClick={handleAddToCart}
               disabled={!inStock}
-              className={`w-full py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-md ${
+              className={`w-full py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider transition-all duration-200 ease-out flex items-center justify-center space-x-2 shadow-md ${
                 addedAnimation
                   ? 'bg-emerald-600 text-white shadow-emerald-500/25 scale-[1.01]'
                   : inStock
-                  ? 'bg-[#DC2626] hover:bg-red-700 text-white shadow-red-500/25 hover:shadow-red-500/40'
+                  ? 'bg-[#DC2626] hover:bg-red-700 hover:-translate-y-0.5 active:scale-95 text-white shadow-red-500/25 hover:shadow-red-500/40'
                   : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
               }`}
             >
               {addedAnimation ? (
                 <>
-                  <Check className="w-5 h-5" />
+                  <Check className="w-5 h-5 animate-scale-in" />
                   <span>Added to Shopping Cart!</span>
                 </>
               ) : inStock ? (
                 <>
-                  <ShoppingBag className="w-5 h-5" />
-                  <span>Add to Cart — ${(product.price * quantity).toFixed(2)}</span>
+                  <ShoppingBag className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
+                  <span>Add to Cart — ₹{(product.price * quantity).toFixed(2)}</span>
                 </>
               ) : (
                 <span>Currently Out of Stock</span>
@@ -417,9 +417,9 @@ export function ProductDetailClient({
               href={whatsappEnquiryUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3.5 rounded-xl bg-white hover:bg-slate-50 border border-[#E2E8F0] hover:border-emerald-300 text-slate-700 hover:text-emerald-700 text-xs font-bold tracking-wide transition-colors flex items-center justify-center space-x-2 shadow-sm font-label"
+              className="w-full py-3.5 rounded-xl bg-white hover:bg-slate-50 border border-[#E2E8F0] hover:border-emerald-300 text-slate-700 hover:text-emerald-700 hover:-translate-y-0.5 active:scale-95 text-xs font-bold tracking-wide transition-all duration-200 ease-out flex items-center justify-center space-x-2 shadow-sm font-label"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <MessageCircle className="w-4 h-4 text-emerald-600 transition-transform duration-200 hover:scale-110" />
               <span>Ask Concierge About This Part on WhatsApp</span>
             </a>
           </div>
@@ -609,7 +609,7 @@ export function ProductDetailClient({
         <div className="flex flex-col">
           <span className="text-[10px] text-slate-400 font-label uppercase font-bold">Total Price</span>
           <span className="text-base font-black text-[#0F172A]">
-            ${(product.price * quantity).toFixed(2)}
+            ₹{(product.price * quantity).toFixed(2)}
           </span>
         </div>
 
@@ -628,11 +628,11 @@ export function ProductDetailClient({
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center space-x-1.5 shadow-sm ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 ease-out active:scale-95 flex items-center space-x-1.5 shadow-sm ${
               addedAnimation
                 ? 'bg-emerald-600 text-white'
                 : inStock
-                ? 'bg-[#DC2626] hover:bg-red-700 text-white'
+                ? 'bg-[#DC2626] hover:bg-red-700 text-white shadow-red-500/20'
                 : 'bg-slate-100 text-slate-400 cursor-not-allowed'
             }`}
           >

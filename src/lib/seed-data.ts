@@ -1109,9 +1109,9 @@ export const initialSettings: StoreSettings = {
   contactPhone: '+1234567890',
   whatsappRecipientNumber: '+1234567890',
   supportEmail: 'support@kravionauto.com',
-  currency: 'USD',
-  currencySymbol: '$',
-  freeShippingThreshold: 150,
+  currency: 'INR',
+  currencySymbol: '₹',
+  freeShippingThreshold: 15000,
   announcementText:
-    'Complimentary Worldwide Air Express Shipping on orders over $150 | 2-Year Precision Fitment Guarantee',
+    'Complimentary Worldwide Air Express Shipping on orders over ₹15,000 | 2-Year Precision Fitment Guarantee',
 };

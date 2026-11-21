@@ -74,7 +74,7 @@ export default function CartPage() {
                 <span className="font-semibold text-slate-700 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#DC2626]" />
                   {amountToFreeShipping > 0
-                    ? `Add $${amountToFreeShipping.toFixed(2)} more for Free Express Air Shipping`
+                    ? `Add ₹${amountToFreeShipping.toFixed(2)} more for Free Express Air Shipping`
                     : 'You have unlocked Complimentary Express Shipping!'}
                 </span>
                 <span className="font-bold text-[#DC2626]">
@@ -175,7 +175,7 @@ export default function CartPage() {
                       </div>
 
                       <span className="text-sm sm:text-base font-black text-[#0F172A] min-w-[70px] text-right">
-                        ${(product.price * quantity).toFixed(2)}
+                        ₹{(product.price * quantity).toFixed(2)}
                       </span>
 
                       <button
@@ -219,7 +219,7 @@ export default function CartPage() {
                 <div className="flex justify-between text-slate-600 pb-2">
                   <span>Subtotal</span>
                   <span className="text-[#0F172A] font-bold">
-                    ${subtotal.toFixed(2)}
+                    ₹{subtotal.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 py-2">
@@ -228,20 +228,20 @@ export default function CartPage() {
                     {shipping === 0 ? (
                       <span className="text-emerald-700">FREE</span>
                     ) : (
-                      <span className="text-[#0F172A]">${shipping.toFixed(2)}</span>
+                      <span className="text-[#0F172A]">₹{shipping.toFixed(2)}</span>
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 py-2">
                   <span>Estimated Tax (8%)</span>
                   <span className="text-[#0F172A] font-bold">
-                    ${tax.toFixed(2)}
+                    ₹{tax.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-black text-[#0F172A] pt-3">
                   <span>Total Amount</span>
                   <span className="text-[#0F172A]">
-                    ${totalAmount.toFixed(2)}
+                    ₹{totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>

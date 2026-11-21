@@ -743,7 +743,7 @@ export default function AdminProductsPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-slate-700">
-                      Price ($) <span className="text-[#DC2626]">*</span>
+                      Price (₹) <span className="text-[#DC2626]">*</span>
                     </label>
                     <input
                       type="number"
@@ -757,7 +757,7 @@ export default function AdminProductsPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700">Sale Price ($)</label>
+                    <label className="text-xs font-semibold text-slate-700">Sale Price (₹)</label>
                     <input
                       type="number"
                       step="0.01"

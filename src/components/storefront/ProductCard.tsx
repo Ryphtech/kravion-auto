@@ -77,7 +77,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const inStock = product.inStock !== false && (product.stockQuantity === undefined || product.stockQuantity > 0);
 
   return (
-    <div className="group relative rounded-2xl bg-white border border-[#E2E8F0] hover:border-red-300 transition-all duration-300 flex flex-col overflow-hidden shadow-subtle hover:shadow-card-hover font-sans">
+    <div className="group relative rounded-2xl bg-white border border-[#E2E8F0] hover:border-red-300/90 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-card-hover flex flex-col overflow-hidden shadow-subtle font-sans">
       {/* Product Image Container */}
       <Link
         href={`/products/${product.id}`}
@@ -88,25 +88,25 @@ export function ProductCard({ product }: ProductCardProps) {
           alt={product.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          className="object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
         />
 
         {/* Top Badges: Category & Wishlist */}
         <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10">
-          <span className="text-[10px] font-label font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm">
+          <span className="text-[10px] font-label font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white">
             {product.categoryName || product.category}
           </span>
 
           <button
             onClick={handleToggleWishlist}
-            className={`p-2 rounded-xl backdrop-blur-md transition-all shadow-sm ${
+            className={`p-2 rounded-xl backdrop-blur-md transition-all duration-200 ease-out shadow-sm hover:scale-110 active:scale-90 ${
               inWishlist
                 ? 'bg-rose-50 text-[#DC2626] border border-red-200'
                 : 'bg-white/90 text-slate-400 border border-slate-200 hover:text-[#DC2626] hover:bg-white'
             }`}
             aria-label={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
           >
-            <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-[#DC2626]' : ''}`} />
+            <Heart className={`w-3.5 h-3.5 transition-transform duration-200 ${inWishlist ? 'fill-[#DC2626] scale-110' : ''}`} />
           </button>
         </div>
 
@@ -114,7 +114,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="absolute bottom-2.5 inset-x-2.5 z-10">
           <div
             onClick={handleFitmentClick}
-            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-[11px] font-semibold backdrop-blur-md border transition-all ${fitmentBg}`}
+            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-[11px] font-semibold backdrop-blur-md border transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] ${fitmentBg}`}
           >
             {fitmentIcon}
             <span className="truncate">{compatibility.label}</span>
@@ -148,7 +148,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
 
           {/* Product Title */}
-          <Link href={`/products/${product.id}`} className="block group-hover:text-[#DC2626] transition-colors">
+          <Link href={`/products/${product.id}`} className="block group-hover:text-[#DC2626] transition-colors duration-200 ease-out">
             <h3 className="text-xs sm:text-sm font-extrabold text-[#0F172A] line-clamp-2 leading-snug">
               {product.title}
             </h3>
@@ -165,11 +165,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex flex-col">
             <div className="flex items-baseline space-x-1.5">
               <span className="text-base sm:text-lg font-black text-[#0F172A]">
-                ${product.price.toFixed(2)}
+                ₹{product.price.toFixed(2)}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.price && (
                 <span className="text-xs text-slate-400 line-through font-medium">
-                  ${product.compareAtPrice.toFixed(2)}
+                  ₹{product.compareAtPrice.toFixed(2)}
                 </span>
               )}
             </div>
@@ -181,11 +181,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm ${
+            className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out flex items-center space-x-1.5 shadow-sm hover:-translate-y-0.5 active:scale-95 ${
               addedRecently
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-emerald-600 text-white shadow-emerald-500/20'
                 : inStock
-                ? 'bg-[#0F172A] hover:bg-[#DC2626] text-white'
+                ? 'bg-[#0F172A] hover:bg-[#DC2626] text-white hover:shadow-red-500/25'
                 : 'bg-slate-100 text-slate-400 cursor-not-allowed'
             }`}
             title="Add to shopping cart"

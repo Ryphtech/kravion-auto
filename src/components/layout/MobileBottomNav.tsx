@@ -28,37 +28,37 @@ export function MobileBottomNav() {
         {/* 1. Home */}
         <Link
           href="/"
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
+          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ease-out active:scale-90 ${
             isHome
               ? 'text-[#DC2626] font-bold'
               : 'text-slate-500 hover:text-slate-800 font-medium'
           }`}
         >
-          <Home className={`w-5 h-5 ${isHome ? 'stroke-[2.5]' : 'stroke-2'}`} />
+          <Home className={`w-5 h-5 transition-transform duration-200 ${isHome ? 'stroke-[2.5] scale-110' : 'stroke-2'}`} />
           <span className="text-[10px] font-label mt-0.5 tracking-tight">Home</span>
         </Link>
 
         {/* 2. Catalog / Explore */}
         <Link
           href="/products"
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
+          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ease-out active:scale-90 ${
             isProducts
               ? 'text-[#DC2626] font-bold'
               : 'text-slate-500 hover:text-slate-800 font-medium'
           }`}
         >
-          <Compass className={`w-5 h-5 ${isProducts ? 'stroke-[2.5]' : 'stroke-2'}`} />
+          <Compass className={`w-5 h-5 transition-transform duration-200 ${isProducts ? 'stroke-[2.5] scale-110' : 'stroke-2'}`} />
           <span className="text-[10px] font-label mt-0.5 tracking-tight">Catalog</span>
         </Link>
 
         {/* 3. My Garage */}
         <button
           onClick={openGarageModal}
-          className="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 hover:text-slate-800 font-medium transition-colors"
+          className="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 hover:text-slate-800 font-medium transition-all duration-200 ease-out active:scale-90"
           aria-label="Open My Garage"
         >
           <div className="relative">
-            <Car className="w-5 h-5 stroke-2" />
+            <Car className="w-5 h-5 stroke-2 transition-transform duration-200 hover:scale-110" />
             {selectedVehicle && isHydrated && (
               <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -74,16 +74,16 @@ export function MobileBottomNav() {
         {/* 4. Wishlist */}
         <Link
           href="/wishlist"
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
+          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ease-out active:scale-90 ${
             isWishlist
               ? 'text-[#DC2626] font-bold'
               : 'text-slate-500 hover:text-slate-800 font-medium'
           }`}
         >
           <div className="relative">
-            <Heart className={`w-5 h-5 ${isWishlist ? 'stroke-[2.5] fill-[#DC2626]' : 'stroke-2'}`} />
+            <Heart className={`w-5 h-5 transition-transform duration-200 ${isWishlist ? 'stroke-[2.5] fill-[#DC2626] scale-110' : 'stroke-2'}`} />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#DC2626] text-white text-[9px] font-bold flex items-center justify-center font-label shadow-sm">
+              <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#DC2626] text-white text-[9px] font-bold flex items-center justify-center font-label shadow-sm animate-scale-in">
                 {wishlistCount}
               </span>
             )}
@@ -94,16 +94,16 @@ export function MobileBottomNav() {
         {/* 5. Cart */}
         <Link
           href="/cart"
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
+          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ease-out active:scale-90 ${
             isCart
               ? 'text-[#DC2626] font-bold'
               : 'text-slate-500 hover:text-slate-800 font-medium'
           }`}
         >
           <div className="relative">
-            <ShoppingBag className={`w-5 h-5 ${isCart ? 'stroke-[2.5]' : 'stroke-2'}`} />
+            <ShoppingBag className={`w-5 h-5 transition-transform duration-200 ${isCart ? 'stroke-[2.5] scale-110' : 'stroke-2'}`} />
             {totalCount > 0 && (
-              <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#DC2626] text-white text-[9px] font-extrabold flex items-center justify-center font-label shadow-sm">
+              <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#DC2626] text-white text-[9px] font-extrabold flex items-center justify-center font-label shadow-sm animate-scale-in">
                 {totalCount}
               </span>
             )}

@@ -100,15 +100,15 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
 
         {/* Slide Content Overlay */}
         <div className="absolute inset-0 z-10 flex flex-col justify-end sm:justify-center p-5 sm:p-12 lg:p-16 max-w-3xl">
-          <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-left-4 duration-500">
+          <div key={currentIndex} className="space-y-3 sm:space-y-4 animate-fade-in-up">
             {/* Tag Badge */}
-            <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-[11px] sm:text-xs font-label font-bold tracking-wider uppercase">
+            <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-[11px] sm:text-xs font-label font-bold tracking-wider uppercase shadow-sm">
               <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse"></span>
               <span>{currentPoster.tag || 'Bespoke Upgrade'}</span>
             </div>
 
             {/* Headline */}
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight drop-shadow-sm">
               {currentPoster.title}
             </h1>
 
@@ -121,16 +121,16 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
             <div className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
               <Link
                 href={currentPoster.linkUrl || '/products'}
-                className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-red-500/30 group/btn"
+                className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-[#DC2626] hover:bg-red-700 hover:-translate-y-0.5 active:scale-95 text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 ease-out shadow-md shadow-red-500/30 hover:shadow-red-500/50 group/btn"
               >
                 <span>Explore Upgrades</span>
-                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-200 ease-out" />
               </Link>
               <Link
                 href="/products?fitsGarage=true"
-                className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 font-bold text-xs uppercase tracking-wider transition-all"
+                className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 hover:-translate-y-0.5 active:scale-95 backdrop-blur-md text-white border border-white/20 font-bold text-xs uppercase tracking-wider transition-all duration-200 ease-out shadow-sm"
               >
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform duration-200" />
                 <span>Verify Fitment</span>
               </Link>
             </div>
@@ -141,14 +141,14 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
         <div className="hidden sm:block">
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white border border-white/20 transition-all opacity-0 group-hover:opacity-100"
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/70 hover:scale-110 active:scale-90 backdrop-blur-md text-white border border-white/20 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 shadow-lg"
             aria-label="Previous Slide"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white border border-white/20 transition-all opacity-0 group-hover:opacity-100"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/70 hover:scale-110 active:scale-90 backdrop-blur-md text-white border border-white/20 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 shadow-lg"
             aria-label="Next Slide"
           >
             <ChevronRight className="w-5 h-5" />
@@ -158,14 +158,14 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
           <div className="hidden sm:flex absolute right-6 bottom-6 z-20 items-center space-x-2">
             <button
               onClick={prevSlide}
-              className="p-3 rounded-xl bg-white/10 hover:bg-white/25 text-white backdrop-blur-md border border-white/20 transition-all shadow-sm"
+              className="p-3 rounded-xl bg-white/10 hover:bg-white/25 hover:scale-105 active:scale-90 text-white backdrop-blur-md border border-white/20 transition-all duration-200 ease-out shadow-sm"
               aria-label="Previous Slide"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={nextSlide}
-              className="p-3 rounded-xl bg-white/10 hover:bg-white/25 text-white backdrop-blur-md border border-white/20 transition-all shadow-sm"
+              className="p-3 rounded-xl bg-white/10 hover:bg-white/25 hover:scale-105 active:scale-90 text-white backdrop-blur-md border border-white/20 transition-all duration-200 ease-out shadow-sm"
               aria-label="Next Slide"
             >
               <ChevronRight className="w-5 h-5" />

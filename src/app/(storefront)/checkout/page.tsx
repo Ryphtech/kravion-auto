@@ -476,12 +476,12 @@ export default function CheckoutPage() {
                           {product.title}
                         </p>
                         <span className="text-[11px] text-slate-500 font-label">
-                          Qty: {quantity} × ${product.price.toFixed(2)}
+                          Qty: {quantity} × ₹{product.price.toFixed(2)}
                         </span>
                       </div>
                     </div>
                     <span className="font-black text-[#0F172A] shrink-0">
-                      ${(product.price * quantity).toFixed(2)}
+                      ₹{(product.price * quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}
@@ -492,7 +492,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-slate-600 pb-2">
                   <span>Subtotal</span>
                   <span className="text-[#0F172A] font-bold">
-                    ${subtotal.toFixed(2)}
+                    ₹{subtotal.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 py-2">
@@ -501,20 +501,20 @@ export default function CheckoutPage() {
                     {shipping === 0 ? (
                       <span className="text-emerald-700">FREE</span>
                     ) : (
-                      <span className="text-[#0F172A]">${shipping.toFixed(2)}</span>
+                      <span className="text-[#0F172A]">₹{shipping.toFixed(2)}</span>
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 py-2">
                   <span>Estimated Tax (8%)</span>
                   <span className="text-[#0F172A] font-bold">
-                    ${tax.toFixed(2)}
+                    ₹{tax.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-black text-[#0F172A] pt-3">
                   <span>Grand Total</span>
                   <span className="text-[#0F172A]">
-                    ${totalAmount.toFixed(2)}
+                    ₹{totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>

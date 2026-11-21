@@ -60,7 +60,7 @@ export default function WishlistPage() {
                   {product.title}
                 </Link>
                 <span className="text-base font-black text-[#0F172A] block">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(2)}
                 </span>
               </div>
 

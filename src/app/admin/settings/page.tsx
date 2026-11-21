@@ -31,10 +31,10 @@ export default function AdminSettingsPage() {
   const [contactPhone, setContactPhone] = useState('+1 (800) 555-0199');
   const [whatsappNumber, setWhatsappNumber] = useState('919876543210');
   const [supportEmail, setSupportEmail] = useState('concierge@kravion.com');
-  const [currency, setCurrency] = useState('USD');
-  const [currencySymbol, setCurrencySymbol] = useState('$');
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | string>(150);
-  const [announcementText, setAnnouncementText] = useState('Complimentary bespoke shipping on orders over $150');
+  const [currency, setCurrency] = useState('INR');
+  const [currencySymbol, setCurrencySymbol] = useState('₹');
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | string>(15000);
+  const [announcementText, setAnnouncementText] = useState('Complimentary bespoke shipping on orders over ₹15,000');
 
   useEffect(() => {
     async function loadSettings() {
@@ -47,8 +47,8 @@ export default function AdminSettingsPage() {
             s.whatsappRecipientNumber || (s as any).whatsappNumber || '919876543210'
           );
           setSupportEmail(s.supportEmail || 'concierge@kravion.com');
-          setCurrency(s.currency || 'USD');
-          setCurrencySymbol(s.currencySymbol || '$');
+          setCurrency(s.currency || 'INR');
+          setCurrencySymbol(s.currencySymbol || '₹');
           if (s.freeShippingThreshold !== undefined) {
             setFreeShippingThreshold(s.freeShippingThreshold);
           }
@@ -91,9 +91,9 @@ export default function AdminSettingsPage() {
         whatsappRecipientNumber: cleanWaPhone,
         whatsappNumber: cleanWaPhone,
         supportEmail: supportEmail.trim(),
-        currency: currency.trim() || 'USD',
-        currencySymbol: currencySymbol.trim() || '$',
-        freeShippingThreshold: Number(freeShippingThreshold) || 150,
+        currency: currency.trim() || 'INR',
+        currencySymbol: currencySymbol.trim() || '₹',
+        freeShippingThreshold: Number(freeShippingThreshold) || 15000,
         announcementText: announcementText.trim(),
       };
 
@@ -280,7 +280,7 @@ export default function AdminSettingsPage() {
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 flex items-center gap-1">
-                <Truck className="w-3.5 h-3.5 text-[#DC2626]" /> Free Shipping Threshold ($)
+                <Truck className="w-3.5 h-3.5 text-[#DC2626]" /> Free Shipping Threshold (₹)
               </label>
               <input
                 type="number"

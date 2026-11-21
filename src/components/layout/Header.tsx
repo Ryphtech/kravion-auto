@@ -71,7 +71,7 @@ export function Header() {
   const userInitials = userDisplayName.charAt(0).toUpperCase();
 
   return (
-    <>
+    <header className="sticky top-0 z-[45] w-full font-sans">
       {/* Top Precision Luxury Announcement Bar */}
       <div className="bg-[#0F172A] text-slate-300 border-b border-slate-800/60 text-[11px] py-2 px-4 tracking-wide font-label">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -80,7 +80,7 @@ export function Header() {
             <span>OEM+ Fitment Precision Guarantee</span>
           </div>
           <p className="mx-auto md:mx-0 font-medium text-slate-300">
-            Complimentary Express Shipping on Orders Over $150 &nbsp;|&nbsp;{' '}
+            Complimentary Express Shipping on Orders Over ₹15,000 &nbsp;|&nbsp;{' '}
             <span className="text-white font-semibold underline decoration-red-500 underline-offset-4">
               Direct WhatsApp Concierge Checkout
             </span>
@@ -97,7 +97,7 @@ export function Header() {
       </div>
 
       {/* Main Sticky Header in Clean Light Luxury Styling */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] shadow-sm transition-all font-sans">
+      <div className="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] shadow-sm transition-all">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
           {/* Kravion Logo */}
           <div className="flex items-center shrink-0">
@@ -116,29 +116,29 @@ export function Header() {
           <nav className="hidden lg:flex items-center space-x-7 text-xs font-semibold uppercase tracking-wider text-slate-700 font-label">
             <Link
               href="/"
-              className="hover:text-[#DC2626] transition-colors py-2"
+              className="hover:text-[#DC2626] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out py-2"
             >
               Home
             </Link>
             <Link
               href="/products"
-              className="hover:text-[#DC2626] transition-colors py-2"
+              className="hover:text-[#DC2626] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out py-2"
             >
               All Products
             </Link>
 
             {/* Quick Makes Dropdown */}
             <div className="relative group">
-              <button className="flex items-center space-x-1 hover:text-[#DC2626] transition-colors py-2">
+              <button className="flex items-center space-x-1 hover:text-[#DC2626] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out py-2">
                 <span>Makes</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all" />
+                <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all duration-200" />
               </button>
-              <div className="absolute top-full left-0 w-48 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl p-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 space-y-1">
+              <div className="absolute top-full left-0 w-48 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl p-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 ease-out space-y-1 transform translate-y-2 group-hover:translate-y-0">
                 {['Audi', 'Mercedes-Benz', 'BMW', 'Porsche'].map((make) => (
                   <Link
                     key={make}
                     href={`/products?make=${encodeURIComponent(make)}`}
-                    className="block px-3 py-2 text-xs font-medium text-slate-700 hover:text-[#DC2626] hover:bg-slate-50 rounded-xl transition-colors"
+                    className="block px-3 py-2 text-xs font-medium text-slate-700 hover:text-[#DC2626] hover:bg-slate-50 hover:translate-x-1 rounded-xl transition-all duration-150 ease-out"
                   >
                     {make}
                   </Link>
@@ -148,11 +148,11 @@ export function Header() {
 
             {/* Quick Categories Dropdown */}
             <div className="relative group">
-              <button className="flex items-center space-x-1 hover:text-[#DC2626] transition-colors py-2">
+              <button className="flex items-center space-x-1 hover:text-[#DC2626] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out py-2">
                 <span>Categories</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all" />
+                <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all duration-200" />
               </button>
-              <div className="absolute top-full left-0 w-60 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl p-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 space-y-1">
+              <div className="absolute top-full left-0 w-60 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl p-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 ease-out space-y-1 transform translate-y-2 group-hover:translate-y-0">
                 {[
                   { name: 'Ambient Lighting', slug: 'ambient-lighting' },
                   { name: 'Audio & Speakers', slug: 'audio-speakers' },
@@ -163,7 +163,7 @@ export function Header() {
                   <Link
                     key={cat.slug}
                     href={`/products?category=${cat.slug}`}
-                    className="block px-3 py-2 text-xs font-medium text-slate-700 hover:text-[#DC2626] hover:bg-slate-50 rounded-xl transition-colors"
+                    className="block px-3 py-2 text-xs font-medium text-slate-700 hover:text-[#DC2626] hover:bg-slate-50 hover:translate-x-1 rounded-xl transition-all duration-150 ease-out"
                   >
                     {cat.name}
                   </Link>
@@ -173,7 +173,7 @@ export function Header() {
 
             <Link
               href="/products?fitsGarage=true"
-              className="text-[#DC2626] hover:text-red-700 font-bold transition-colors py-2 flex items-center space-x-1"
+              className="text-[#DC2626] hover:text-red-700 hover:-translate-y-0.5 active:scale-95 font-bold transition-all duration-200 ease-out py-2 flex items-center space-x-1"
             >
               <Sparkles className="w-3 h-3 text-[#DC2626]" />
               <span>Fitment Guide</span>
@@ -185,7 +185,7 @@ export function Header() {
             {/* My Garage Button / Active Vehicle Indicator */}
             <button
               onClick={openGarageModal}
-              className={`flex items-center space-x-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold border transition-all ${
+              className={`flex items-center space-x-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-semibold border transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95 ${
                 selectedVehicle && isHydrated
                   ? 'bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100 shadow-sm'
                   : 'bg-slate-50 border-[#E2E8F0] text-slate-700 hover:border-red-400 hover:text-[#DC2626] hover:bg-white'
@@ -224,7 +224,7 @@ export function Header() {
             {/* Search Toggle Shortcut */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 sm:p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 transition-colors shadow-sm"
+              className="p-2 sm:p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all duration-200 ease-out shadow-sm"
               aria-label="Search Catalog"
             >
               <Search className="w-4 h-4" />
@@ -233,13 +233,13 @@ export function Header() {
             {/* Wishlist Link (Desktop/Tablet) */}
             <Link
               href="/wishlist"
-              className="hidden sm:inline-flex relative p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 transition-colors shadow-sm"
+              className="hidden sm:inline-flex relative p-2.5 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 hover:text-[#DC2626] hover:border-red-300 hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all duration-200 ease-out shadow-sm group/wish"
               aria-label="Wishlist"
               title="Saved Wishlist"
             >
-              <Heart className="w-4 h-4" />
+              <Heart className="w-4 h-4 group-hover/wish:scale-110 transition-transform duration-200" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#DC2626] text-white font-label text-[9px] font-bold flex items-center justify-center shadow-sm">
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#DC2626] text-white font-label text-[9px] font-bold flex items-center justify-center shadow-sm animate-scale-in">
                   {wishlistCount}
                 </span>
               )}
@@ -248,13 +248,13 @@ export function Header() {
             {/* Shopping Cart Link */}
             <Link
               href="/cart"
-              className="relative p-2 sm:p-2.5 rounded-xl bg-red-50 border border-red-200 text-[#DC2626] hover:bg-red-100 transition-colors shadow-sm"
+              className="relative p-2 sm:p-2.5 rounded-xl bg-red-50 border border-red-200 text-[#DC2626] hover:bg-red-100 hover:scale-105 active:scale-95 transition-all duration-200 ease-out shadow-sm group/cart"
               aria-label="Shopping Cart"
               title="View Cart"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 group-hover/cart:scale-110 transition-transform duration-200" />
               {totalCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#DC2626] text-white font-label text-[9px] font-extrabold flex items-center justify-center shadow-sm">
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#DC2626] text-white font-label text-[9px] font-extrabold flex items-center justify-center shadow-sm animate-scale-in">
                   {totalCount}
                 </span>
               )}
@@ -265,7 +265,7 @@ export function Header() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center space-x-2 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-white border border-[#E2E8F0] hover:border-red-400 text-slate-800 transition-colors shadow-sm"
+                  className="flex items-center space-x-2 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-white border border-[#E2E8F0] hover:border-red-400 hover:scale-105 active:scale-95 text-slate-800 transition-all duration-200 ease-out shadow-sm"
                   aria-label="User Account Menu"
                 >
                   <div className="w-6 h-6 rounded-lg bg-[#0F172A] text-white font-bold text-xs flex items-center justify-center shadow-sm">
@@ -279,7 +279,7 @@ export function Header() {
 
                 {/* Dropdown Menu */}
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-[#E2E8F0] shadow-xl p-2 z-50 space-y-1 animate-in fade-in-50 duration-150">
+                  <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-[#E2E8F0] shadow-xl p-2 z-50 space-y-1 animate-scale-in">
                     <div className="px-3 py-2 border-b border-[#E2E8F0] mb-1">
                       <p className="text-xs font-bold text-[#0F172A] truncate">
                         {userDisplayName}
@@ -553,7 +553,7 @@ export function Header() {
           </div>
           </>
         )}
+        </div>
       </header>
-    </>
   );
 }

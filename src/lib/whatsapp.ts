@@ -15,7 +15,7 @@ export function sanitizePhoneNumber(phone: string): string {
  */
 export function formatCurrency(
   amount?: number | null,
-  currency: string = '$'
+  currency: string = '₹'
 ): string {
   const safeAmount =
     typeof amount === 'number' && !isNaN(amount) ? amount : 0;
@@ -27,8 +27,15 @@ export function formatCurrency(
  */
 export function buildWhatsAppOrderMessage(
   order: any,
-  currencySymbol: string = '$'
+  currencySymbol?: string
 ): string {
+  const symbol =
+    currencySymbol ||
+    (order.currencySymbol
+      ? order.currencySymbol
+      : order.currency === 'USD'
+      ? '$'
+      : '₹');
   const refId = order.id || order.orderNumber || 'KRAV-PENDING';
   const orderNum = order.orderNumber || (refId.startsWith('KRAV-') ? refId : `KRAV-${refId}`);
   const orderDate = order.createdAt
@@ -77,25 +84,25 @@ export function buildWhatsAppOrderMessage(
           : priceVal * (item.quantity || 1)
       );
       lines.push(
-        `${idx + 1}. ${item.title || 'Item'} (x${item.quantity || 1}) - $${subtotalVal.toFixed(2)} ($${priceVal.toFixed(2)} ea)`
+        `${idx + 1}. ${item.title || 'Item'} (x${item.quantity || 1}) - ${symbol}${subtotalVal.toFixed(2)} (${symbol}${priceVal.toFixed(2)} ea)`
       );
     });
   }
 
   lines.push(``);
   if (order.subtotal !== undefined) {
-    lines.push(`Subtotal: $${Number(order.subtotal).toFixed(2)}`);
+    lines.push(`Subtotal: ${symbol}${Number(order.subtotal).toFixed(2)}`);
   }
   if (order.shipping !== undefined) {
     lines.push(
-      `Shipping: ${Number(order.shipping) === 0 ? 'FREE' : `$${Number(order.shipping).toFixed(2)}`}`
+      `Shipping: ${Number(order.shipping) === 0 ? 'FREE' : `${symbol}${Number(order.shipping).toFixed(2)}`}`
     );
   }
   if (order.tax !== undefined) {
-    lines.push(`Estimated Tax: $${Number(order.tax).toFixed(2)}`);
+    lines.push(`Estimated Tax: ${symbol}${Number(order.tax).toFixed(2)}`);
   }
   const totalVal = Number(order.totalAmount ?? order.subtotal ?? 0);
-  lines.push(`*Total Amount: $${totalVal.toFixed(2)} ${order.currency || 'USD'}*`);
+  lines.push(`*Total Amount: ${symbol}${totalVal.toFixed(2)} ${order.currency || 'INR'}*`);
 
   const notes = order.notes || order.customerNotes;
   if (notes) {

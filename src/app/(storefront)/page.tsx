@@ -9,6 +9,7 @@ import {
 } from '@/lib/data-service';
 import { HeroCarousel } from '@/components/storefront/HeroCarousel';
 import { ProductCard } from '@/components/storefront/ProductCard';
+import { FeaturedScrollStack } from '@/components/storefront/FeaturedScrollStack';
 import {
   ArrowRight,
   ShieldCheck,
@@ -114,26 +115,26 @@ export default async function StorefrontHomePage() {
               <Link
                 key={make}
                 href={`/products?make=${encodeURIComponent(make)}`}
-                className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-400 transition-all duration-300 flex flex-col justify-end p-4 sm:p-6 min-h-[180px] sm:min-h-[240px] shadow-subtle hover:shadow-card-hover hover:-translate-y-1"
+                className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-500/80 transition-all duration-500 ease-out flex flex-col justify-end p-4 sm:p-6 min-h-[180px] sm:min-h-[240px] shadow-subtle hover:shadow-elevated hover:-translate-y-2"
               >
                 {/* Background image with refined clean overlay */}
                 {meta.bgImage && (
-                  <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={meta.bgImage}
                       alt={make}
                       fill
                       sizes="(max-width: 640px) 50vw, 25vw"
-                      className="object-cover object-center filter brightness-[0.80] contrast-105 group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover object-center filter brightness-[0.80] contrast-105 group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/60 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
                   </div>
                 )}
 
                 {/* Card Content */}
                 <div className="relative z-10 space-y-1 sm:space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] sm:text-[10px] font-label uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold">
+                    <span className="text-[9px] sm:text-[10px] font-label uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold group-hover:bg-red-600/40 group-hover:border-red-400/60 transition-all duration-300 ease-out">
                       {meta.logoText}
                     </span>
                     <span className="text-[10px] sm:text-[11px] text-slate-300 font-label font-medium hidden sm:inline">
@@ -141,7 +142,7 @@ export default async function StorefrontHomePage() {
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-xl font-black text-white uppercase tracking-tight group-hover:text-red-400 transition-colors">
+                  <h3 className="text-base sm:text-xl font-black text-white uppercase tracking-tight group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300 ease-out">
                     {make}
                   </h3>
 
@@ -149,9 +150,9 @@ export default async function StorefrontHomePage() {
                     {meta.models}
                   </p>
 
-                  <div className="pt-1 sm:pt-2 flex items-center text-[11px] sm:text-xs font-bold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all">
+                  <div className="pt-1 sm:pt-2 flex items-center text-[11px] sm:text-xs font-bold text-white group-hover:text-red-400 transition-all duration-300 ease-out">
                     <span>Explore</span>
-                    <ArrowRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 ml-1" />
+                    <ArrowRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 ml-1 group-hover:translate-x-2 transition-transform duration-300 ease-out" />
                   </div>
                 </div>
               </Link>
@@ -178,10 +179,10 @@ export default async function StorefrontHomePage() {
 
           <Link
             href="/products"
-            className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label"
+            className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label group"
           >
             <span>All Categories</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 ease-out" />
           </Link>
         </div>
 
@@ -190,36 +191,33 @@ export default async function StorefrontHomePage() {
             <Link
               key={cat.id}
               href={`/products?category=${cat.slug}`}
-              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-400 transition-all duration-300 flex flex-col justify-end p-5 sm:p-7 min-h-[190px] sm:min-h-[230px] shadow-subtle hover:shadow-card-hover"
+              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-500/80 transition-all duration-500 ease-out flex flex-col justify-end p-5 sm:p-7 min-h-[190px] sm:min-h-[230px] shadow-subtle hover:shadow-elevated hover:-translate-y-2"
             >
               {/* Category Background Image */}
               {cat.imageUrl && (
-                <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 z-0 overflow-hidden">
                   <Image
                     src={cat.imageUrl}
                     alt={cat.name}
                     fill
                     sizes="(max-width: 640px) 100vw, 33vw"
-                    className="object-cover object-center filter brightness-[0.75] contrast-105 group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover object-center filter brightness-[0.75] contrast-105 group-hover:scale-110 transition-transform duration-700 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/50 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
                 </div>
               )}
 
               {/* Overlay Content */}
-              <div className="relative z-10 space-y-1.5 sm:space-y-2">
-                <span className="text-[10px] font-label uppercase tracking-widest text-red-400 font-bold">
+              <div className="relative z-10 space-y-2">
+                <span className="text-[10px] font-label uppercase tracking-widest text-red-400 font-bold group-hover:translate-x-1 transition-transform duration-300 ease-out inline-block">
                   0{idx + 1} / Collection
                 </span>
-                <h3 className="text-lg sm:text-xl font-extrabold text-white group-hover:text-red-400 transition-colors">
+                <h3 className="text-lg sm:text-xl font-extrabold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300 ease-out">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-slate-200 line-clamp-2 leading-relaxed font-label font-normal">
-                  {cat.description}
-                </p>
-                <div className="pt-1 sm:pt-2 flex items-center text-xs font-bold text-white group-hover:text-red-400 group-hover:translate-x-1 transition-all">
-                  <span>Browse Category</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                <div className="pt-2 flex items-center text-xs font-bold text-white group-hover:text-red-400 transition-all duration-300 ease-out">
+                  <span className="group-hover:translate-x-1 transition-transform duration-300 ease-out">Browse Category</span>
+                  <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-2.5 transition-transform duration-300 ease-out" />
                 </div>
               </div>
             </Link>
@@ -252,12 +250,8 @@ export default async function StorefrontHomePage() {
           </Link>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {displayProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {/* Featured Catalogue ScrollStack Showcase */}
+        <FeaturedScrollStack products={displayProducts} />
       </section>
 
       {/* 5. Brand Trust Banner in Deep Slate Luxury Style */}
@@ -280,7 +274,7 @@ export default async function StorefrontHomePage() {
             <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <Link
                 href="/products"
-                className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-md shadow-red-500/30 text-center"
+                className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-[#DC2626] hover:bg-red-700 hover:-translate-y-0.5 active:scale-95 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 ease-out shadow-md shadow-red-500/30 hover:shadow-red-500/50 text-center"
               >
                 Browse All Upgrades
               </Link>
@@ -288,7 +282,7 @@ export default async function StorefrontHomePage() {
                 href="https://wa.me/1234567890?text=Hello%20Kravion%20Auto,%20I'd%20like%20to%20learn%20more%20about%20your%20concierge%20service."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold tracking-wide border border-white/20 transition-colors backdrop-blur-md text-center"
+                className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-white/10 hover:bg-white/20 hover:-translate-y-0.5 active:scale-95 text-white text-xs sm:text-sm font-bold tracking-wide border border-white/20 transition-all duration-200 ease-out backdrop-blur-md text-center shadow-sm"
               >
                 Chat with Concierge
               </a>
