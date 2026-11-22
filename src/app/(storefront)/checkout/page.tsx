@@ -179,6 +179,14 @@ export default function CheckoutPage() {
 
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('kravion_recent_order', JSON.stringify(successData));
+        try {
+          const key = `kravion_orders_${user.uid}`;
+          const existing = JSON.parse(window.localStorage.getItem(key) || '[]');
+          const updated = [successData, ...existing.filter((o: any) => o.id !== successData.id)];
+          window.localStorage.setItem(key, JSON.stringify(updated));
+        } catch (storageErr) {
+          console.warn('Could not cache customer order in localStorage:', storageErr);
+        }
       }
 
       // Clear the shopping cart

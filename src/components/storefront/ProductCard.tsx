@@ -107,8 +107,19 @@ export function ProductCard({
           alt={product.title}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
+          className={`object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out ${
+            !inStock ? 'opacity-85 grayscale-[20%]' : ''
+          }`}
         />
+
+        {/* Sold Out Overlay Badge on Image */}
+        {!inStock && (
+          <div className="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none z-10">
+            <span className="px-3 py-1 rounded-lg bg-black/80 backdrop-blur-md text-white font-black text-[11px] sm:text-xs uppercase tracking-widest border border-white/20 shadow-md">
+              Sold Out
+            </span>
+          </div>
+        )}
 
         {/* Top Badges: Category, Hot Deal & Wishlist */}
         <div className="absolute top-2 inset-x-2 sm:top-3 sm:inset-x-3 flex items-center justify-between z-10 gap-1">
@@ -202,8 +213,8 @@ export function ProductCard({
                 In Stock
               </span>
             ) : (
-              <span className="ml-auto text-[9px] sm:text-[10px] font-label font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 sm:px-2 rounded-full shrink-0">
-                Backorder
+              <span className="ml-auto text-[9px] sm:text-[10px] font-label font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 sm:px-2 rounded-full border border-rose-200 shrink-0">
+                Sold Out
               </span>
             )}
           </div>
@@ -254,20 +265,22 @@ export function ProductCard({
                 ? addButtonVariant === 'red'
                   ? 'bg-[#DC2626] hover:bg-red-700 text-white shadow-md shadow-red-600/25 hover:shadow-red-600/40'
                   : 'bg-[#0F172A] hover:bg-[#DC2626] text-white hover:shadow-red-500/25'
-                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 shadow-none'
             }`}
-            title="Add to shopping cart"
+            title={inStock ? 'Add to shopping cart' : 'Item is currently sold out'}
           >
             {addedRecently ? (
               <>
                 <Check className="w-3.5 h-3.5" />
                 <span className="hidden xs:inline sm:inline">Added</span>
               </>
-            ) : (
+            ) : inStock ? (
               <>
                 <ShoppingBag className="w-3.5 h-3.5" />
                 <span>Add</span>
               </>
+            ) : (
+              <span>Sold Out</span>
             )}
           </button>
         </div>

@@ -27,7 +27,51 @@ import {
   CreateOrderDTO,
   ProductFilter,
   StoreSettings,
+  MarqueConfig,
 } from '@/types';
+
+export const DEFAULT_MARQUE_CONFIGS: Record<string, MarqueConfig> = {
+  Audi: {
+    make: 'Audi',
+    featuredOnHome: true,
+    tagline: 'Vorsprung durch Technik Aero & Dynamic Matrix Upgrades',
+    modelsDescription: 'A4 B9, A6 C8, Q5 FY, Q7 4M',
+    imageUrl:
+      'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=800&auto=format&fit=crop',
+    logoText: 'AUDI',
+    displayOrder: 1,
+  },
+  'Mercedes-Benz': {
+    make: 'Mercedes-Benz',
+    featuredOnHome: true,
+    tagline: 'The Best or Nothing Bespoke Cabin & Rotary Soundstages',
+    modelsDescription: 'C-Class W205, E-Class W213, GLC X253, GLE V167',
+    imageUrl:
+      'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=800&auto=format&fit=crop',
+    logoText: 'MERCEDES',
+    displayOrder: 2,
+  },
+  BMW: {
+    make: 'BMW',
+    featuredOnHome: true,
+    tagline: 'The Ultimate Driving Machine Autoclave Carbon Fiber Aerodynamics',
+    modelsDescription: '3 Series G20, 5 Series G30, X3 G01, X5 G05',
+    imageUrl:
+      'https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=800&auto=format&fit=crop',
+    logoText: 'BMW //M',
+    displayOrder: 3,
+  },
+  Porsche: {
+    make: 'Porsche',
+    featuredOnHome: true,
+    tagline: 'There is No Substitute Precision Valvetronic Titanium Performance',
+    modelsDescription: '911 992, Panamera 971, Macan 95B, Cayenne 9YA',
+    imageUrl:
+      'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=800&auto=format&fit=crop',
+    logoText: 'PORSCHE',
+    displayOrder: 4,
+  },
+};
 
 // In-Memory Fallback State (deep cloned so modifications don't mutate defaults)
 let inMemoryProducts: Product[] = JSON.parse(JSON.stringify(initialProducts));
@@ -36,6 +80,7 @@ let inMemoryVehicles: Vehicle[] = JSON.parse(JSON.stringify(initialVehicles));
 let inMemoryPosters: CarouselPoster[] = JSON.parse(JSON.stringify(initialPosters));
 let inMemoryOrders: OrderEnquiry[] = [];
 let inMemorySettings: StoreSettings = { ...initialSettings };
+let inMemoryMarqueConfigs: Record<string, MarqueConfig> = JSON.parse(JSON.stringify(DEFAULT_MARQUE_CONFIGS));
 
 export function resetInMemoryStore() {
   inMemoryProducts = JSON.parse(JSON.stringify(initialProducts));
@@ -44,6 +89,7 @@ export function resetInMemoryStore() {
   inMemoryPosters = JSON.parse(JSON.stringify(initialPosters));
   inMemoryOrders = [];
   inMemorySettings = { ...initialSettings };
+  inMemoryMarqueConfigs = JSON.parse(JSON.stringify(DEFAULT_MARQUE_CONFIGS));
 }
 
 /**
@@ -364,6 +410,64 @@ export async function getOrders(): Promise<OrderEnquiry[]> {
 }
 
 /**
+ * Resilient fetch of order enquiries for a specific customer
+ */
+export async function getCustomerOrders(customerId: string): Promise<OrderEnquiry[]> {
+  if (!customerId) return [];
+
+  const orderMap = new Map<string, OrderEnquiry>();
+
+  // 1. Fetch from Firestore
+  try {
+    const colRef = collection(db, 'orders');
+    const q = query(colRef, where('customerId', '==', customerId));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      snap.docs.forEach((d) => {
+        const data = { id: d.id, ...d.data() } as OrderEnquiry;
+        orderMap.set(data.id, data);
+      });
+    }
+  } catch (error) {
+    // Fallback to in-memory and local cache
+  }
+
+  // 2. Merge in-memory orders
+  inMemoryOrders
+    .filter((o) => o.customerId === customerId)
+    .forEach((o) => {
+      if (!orderMap.has(o.id)) {
+        orderMap.set(o.id, o);
+      }
+    });
+
+  // 3. Merge browser cached orders if available
+  if (typeof window !== 'undefined') {
+    try {
+      const key = `kravion_orders_${customerId}`;
+      const local = JSON.parse(window.localStorage.getItem(key) || '[]');
+      if (Array.isArray(local)) {
+        local.forEach((o: OrderEnquiry) => {
+          if (o && o.id && !orderMap.has(o.id)) {
+            orderMap.set(o.id, o);
+          }
+        });
+      }
+      const recent = JSON.parse(window.localStorage.getItem('kravion_recent_order') || 'null');
+      if (recent && recent.customerId === customerId && recent.id && !orderMap.has(recent.id)) {
+        orderMap.set(recent.id, recent);
+      }
+    } catch (e) {
+      // LocalStorage access fail-safe
+    }
+  }
+
+  return Array.from(orderMap.values()).sort(
+    (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+  );
+}
+
+/**
  * Resilient creation or update of a product
  */
 export async function saveProduct(product: Partial<Product>): Promise<string> {
@@ -604,6 +708,274 @@ export async function deleteVehicle(id: string): Promise<void> {
     await deleteDoc(docRef);
   } catch (error) {
     console.warn('Firestore vehicle delete blocked (using resilient session fallback):', error);
+  }
+}
+
+/**
+ * Rename a vehicle manufacturer/make across all vehicles and product compatibility mappings
+ */
+export async function renameMake(oldMake: string, newMake: string): Promise<number> {
+  const cleanOld = oldMake.trim();
+  const cleanNew = newMake.trim();
+  if (!cleanOld || !cleanNew || cleanOld === cleanNew) return 0;
+
+  let count = 0;
+
+  // 1. Update in-memory vehicles
+  inMemoryVehicles = inMemoryVehicles.map((v) => {
+    if (v.make.toLowerCase() === cleanOld.toLowerCase()) {
+      count++;
+      return { ...v, make: cleanNew };
+    }
+    return v;
+  });
+
+  // 1b. Update in-memory marque configs
+  if (inMemoryMarqueConfigs[cleanOld]) {
+    inMemoryMarqueConfigs[cleanNew] = {
+      ...inMemoryMarqueConfigs[cleanOld],
+      make: cleanNew,
+      logoText: cleanNew.toUpperCase(),
+    };
+    delete inMemoryMarqueConfigs[cleanOld];
+    saveAllMarqueConfigs(Object.values(inMemoryMarqueConfigs)).catch(() => {});
+  }
+
+  // 2. Update Firestore vehicles
+  try {
+    const colRef = collection(db, 'vehicles');
+    const snap = await getDocs(colRef);
+    if (!snap.empty) {
+      for (const d of snap.docs) {
+        const data = d.data() as Vehicle;
+        if (data.make && data.make.toLowerCase() === cleanOld.toLowerCase()) {
+          await setDoc(doc(db, 'vehicles', d.id), { make: cleanNew }, { merge: true });
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Firestore bulk vehicle make update blocked (using resilient fallback):', err);
+  }
+
+  // 3. Also update product compatibility compatibleMakes
+  inMemoryProducts = inMemoryProducts.map((p) => {
+    if (p.compatibility?.compatibleMakes) {
+      const updatedMakes = p.compatibility.compatibleMakes.map((m) =>
+        m.toLowerCase() === cleanOld.toLowerCase() ? cleanNew : m
+      );
+      return {
+        ...p,
+        compatibility: {
+          ...p.compatibility,
+          compatibleMakes: updatedMakes,
+        },
+      };
+    }
+    return p;
+  });
+
+  try {
+    const prodCol = collection(db, 'products');
+    const prodSnap = await getDocs(prodCol);
+    if (!prodSnap.empty) {
+      for (const d of prodSnap.docs) {
+        const prod = d.data() as Product;
+        if (prod.compatibility?.compatibleMakes) {
+          const hasOld = prod.compatibility.compatibleMakes.some(
+            (m) => m.toLowerCase() === cleanOld.toLowerCase()
+          );
+          if (hasOld) {
+            const updatedMakes = prod.compatibility.compatibleMakes.map((m) =>
+              m.toLowerCase() === cleanOld.toLowerCase() ? cleanNew : m
+            );
+            await setDoc(
+              doc(db, 'products', d.id),
+              { compatibility: { ...prod.compatibility, compatibleMakes: updatedMakes } },
+              { merge: true }
+            );
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Firestore product make rename fallback:', err);
+  }
+
+  return count;
+}
+
+/**
+ * Delete a make and all vehicles registered under it
+ */
+export async function deleteMake(makeName: string): Promise<number> {
+  const clean = makeName.trim();
+  if (!clean) return 0;
+
+  const toDelete = inMemoryVehicles.filter(
+    (v) => v.make.toLowerCase() === clean.toLowerCase()
+  );
+  inMemoryVehicles = inMemoryVehicles.filter(
+    (v) => v.make.toLowerCase() !== clean.toLowerCase()
+  );
+
+  for (const v of toDelete) {
+    try {
+      await deleteDoc(doc(db, 'vehicles', v.id));
+    } catch (e) {
+      // Ignore fallback
+    }
+  }
+
+  if (inMemoryMarqueConfigs[clean]) {
+    delete inMemoryMarqueConfigs[clean];
+    saveAllMarqueConfigs(Object.values(inMemoryMarqueConfigs)).catch(() => {});
+  }
+
+  return toDelete.length;
+}
+
+/**
+ * Add a new make by creating an initial vehicle entry
+ */
+export async function addMake(
+  makeName: string,
+  initialModel = 'Base Model',
+  yearStart = 2020
+): Promise<string> {
+  const cleanMake = makeName.trim();
+  const cleanModel = (initialModel || 'Base Model').trim();
+
+  const id = `${cleanMake.toLowerCase()}-${cleanModel.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/(^-|-$)+/g, '');
+
+  const newVehicle: Vehicle = {
+    id,
+    make: cleanMake,
+    model: cleanModel,
+    generation: 'Gen 1',
+    yearStart,
+    yearEnd: null,
+    yearRange: `${yearStart} - Present`,
+    bodyStyles: ['Sedan', 'Coupe'],
+    imageUrl: '',
+  };
+
+  await saveVehicle(newVehicle);
+  return id;
+}
+
+/**
+ * Resilient fetch of marque configurations for the storefront "Marque Selection" section
+ */
+export async function getMarqueConfigs(): Promise<MarqueConfig[]> {
+  // 1. Try local storage in browser
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('kravion_marque_configs');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (typeof parsed === 'object' && parsed !== null) {
+          inMemoryMarqueConfigs = { ...inMemoryMarqueConfigs, ...parsed };
+        }
+      }
+    } catch (e) {
+      // Ignore localStorage parse error
+    }
+  }
+
+  // 2. Try Firestore settings/marques document
+  try {
+    const docRef = doc(db, 'settings', 'marques');
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data?.marques && typeof data.marques === 'object') {
+        inMemoryMarqueConfigs = { ...inMemoryMarqueConfigs, ...data.marques };
+      }
+    }
+  } catch (error) {
+    // Resilient fallback to memory/localStorage
+  }
+
+  // 3. Ensure every active make in vehicles is present in marque configs
+  try {
+    const vehicles = await getVehicles();
+    const allMakes = Array.from(new Set(vehicles.map((v) => v.make))).sort();
+    allMakes.forEach((make, idx) => {
+      if (!inMemoryMarqueConfigs[make]) {
+        const matchingVeh = vehicles.find((v) => v.make === make && v.imageUrl);
+        inMemoryMarqueConfigs[make] = {
+          make,
+          featuredOnHome: false,
+          imageUrl: matchingVeh?.imageUrl || '',
+          tagline: 'Precision OEM+ Fitment',
+          modelsDescription: `${vehicles.filter((v) => v.make === make).length} Models`,
+          logoText: make.toUpperCase(),
+          displayOrder: 10 + idx,
+        };
+      }
+    });
+  } catch (e) {
+    // Ignore fallback
+  }
+
+  return Object.values(inMemoryMarqueConfigs).sort(
+    (a, b) => (a.displayOrder ?? 99) - (b.displayOrder ?? 99) || a.make.localeCompare(b.make)
+  );
+}
+
+/**
+ * Save or update a single marque configuration
+ */
+export async function saveMarqueConfig(config: MarqueConfig): Promise<void> {
+  const cleanMake = config.make.trim();
+  if (!cleanMake) return;
+
+  inMemoryMarqueConfigs[cleanMake] = {
+    ...config,
+    make: cleanMake,
+  };
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('kravion_marque_configs', JSON.stringify(inMemoryMarqueConfigs));
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  try {
+    const docRef = doc(db, 'settings', 'marques');
+    await setDoc(docRef, { marques: inMemoryMarqueConfigs }, { merge: true });
+  } catch (error) {
+    console.warn('Firestore marque config update blocked (using resilient session fallback):', error);
+  }
+}
+
+/**
+ * Batch save/update all marque configurations
+ */
+export async function saveAllMarqueConfigs(configs: MarqueConfig[]): Promise<void> {
+  const newMap: Record<string, MarqueConfig> = { ...inMemoryMarqueConfigs };
+  for (const c of configs) {
+    if (c.make) {
+      newMap[c.make.trim()] = { ...c, make: c.make.trim() };
+    }
+  }
+  inMemoryMarqueConfigs = newMap;
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('kravion_marque_configs', JSON.stringify(inMemoryMarqueConfigs));
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  try {
+    const docRef = doc(db, 'settings', 'marques');
+    await setDoc(docRef, { marques: inMemoryMarqueConfigs }, { merge: true });
+  } catch (error) {
+    console.warn('Firestore batch marques save blocked (using resilient fallback):', error);
   }
 }
 

@@ -618,11 +618,11 @@ function AdminProductsContent() {
                           className={`w-7 h-7 rounded-lg inline-flex items-center justify-center transition-colors border ${
                             p.inStock
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                              : 'bg-slate-100 text-slate-400 border-slate-200 hover:text-slate-600'
+                              : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100'
                           }`}
-                          title={p.inStock ? 'Mark out of stock' : 'Mark in stock'}
+                          title={p.inStock ? 'In Stock (Click to mark Sold Out)' : 'Sold Out (Click to mark In Stock)'}
                         >
-                          <Check className="w-4 h-4" />
+                          {p.inStock ? <Check className="w-4 h-4" /> : <X className="w-3.5 h-3.5" />}
                         </button>
                       </td>
 

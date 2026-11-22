@@ -131,9 +131,20 @@ export function ProductDetailClient({
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 60vw"
-              className="object-cover object-center group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+              className={`object-cover object-center group-hover:scale-105 transition-transform duration-500 cursor-pointer ${
+                !inStock ? 'opacity-85 grayscale-[20%]' : ''
+              }`}
               onClick={() => setZoomModalOpen(true)}
             />
+
+            {/* Sold Out Center Badge Overlay */}
+            {!inStock && (
+              <div className="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none z-10">
+                <span className="px-5 py-2 rounded-xl bg-black/80 backdrop-blur-md text-white font-black text-sm uppercase tracking-widest border border-white/20 shadow-xl">
+                  Sold Out
+                </span>
+              </div>
+            )}
 
             {/* Top Corner Floating Badges */}
             <div className="absolute top-4 left-4 z-10 flex items-center space-x-2">
@@ -145,8 +156,8 @@ export function ProductDetailClient({
                   Ready to Ship
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-label font-bold text-amber-700 bg-amber-50 backdrop-blur-md border border-amber-200">
-                  Backorder
+                <span className="px-3 py-1 rounded-full text-xs font-label font-bold text-rose-700 bg-rose-50 backdrop-blur-md border border-rose-200">
+                  Sold Out
                 </span>
               )}
             </div>
@@ -408,7 +419,7 @@ export function ProductDetailClient({
                   <span>Add to Cart — ₹{(product.price * quantity).toFixed(2)}</span>
                 </>
               ) : (
-                <span>Currently Out of Stock</span>
+                <span>Sold Out</span>
               )}
             </button>
 
@@ -647,7 +658,7 @@ export function ProductDetailClient({
                 <span>Add to Cart</span>
               </>
             ) : (
-              <span>Out of Stock</span>
+              <span>Sold Out</span>
             )}
           </button>
         </div>

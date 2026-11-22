@@ -355,11 +355,20 @@ function ProductsCatalogContent() {
           <div className="relative flex-1 group">
             <Search className="w-4 h-4 text-slate-400 group-focus-within:text-[#DC2626] transition-colors absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
-              type="text"
+              type="search"
+              enterKeyHint="search"
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                  }
+                }
+              }}
               placeholder={placeholderText ? `Search "${placeholderText}"...` : 'Search by keyword (diffuser, spoiler, ambient, tweeters, exhaust)...'}
-              className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-10 pr-9 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all shadow-sm font-medium"
+              style={{ outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
+              className="w-full bg-white border border-[#E2E8F0] focus:border-slate-400 rounded-xl pl-10 pr-9 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-all shadow-sm font-medium placeholder:truncate"
             />
             {searchQuery && (
               <button

@@ -6,6 +6,7 @@ import {
   getCategories,
   getVehicles,
   getPosters,
+  getMarqueConfigs,
 } from '@/lib/data-service';
 import { HeroCarousel } from '@/components/storefront/HeroCarousel';
 import { ProductCard } from '@/components/storefront/ProductCard';
@@ -58,11 +59,12 @@ const MAKE_DETAILS: Record<
 };
 
 export default async function StorefrontHomePage() {
-  const [products, categories, vehicles, posters] = await Promise.all([
+  const [products, categories, vehicles, posters, marqueConfigs] = await Promise.all([
     getProducts(),
     getCategories(),
     getVehicles(),
     getPosters(),
+    getMarqueConfigs(),
   ]);
 
   const featuredProducts = products.filter((p) => p.featured).slice(0, 8);
@@ -93,7 +95,12 @@ export default async function StorefrontHomePage() {
       return (a.id || '').localeCompare(b.id || '');
     });
 
-  const distinctMakes = ['Audi', 'Mercedes-Benz', 'BMW', 'Porsche'];
+  // Only display makes selected by admin to show in Marque Selection on home
+  const featuredMarques = marqueConfigs.filter((m) => m.featuredOnHome);
+  const displayMarques =
+    featuredMarques.length > 0
+      ? featuredMarques
+      : marqueConfigs.slice(0, 4);
 
   return (
     <div className="space-y-12 sm:space-y-16 lg:space-y-24 pb-24 md:pb-20 font-sans">
@@ -125,15 +132,20 @@ export default async function StorefrontHomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          {distinctMakes.map((make) => {
-            const meta = MAKE_DETAILS[make] || {
-              tagline: 'Precision OEM+ Fitment',
-              models: `${vehicles.filter((v) => v.make === make).length} Models`,
-              bgImage: vehicles.find((v) => v.make === make)?.imageUrl || '',
-              logoText: make.toUpperCase(),
-            };
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          {displayMarques.map((marque) => {
+            const make = marque.make;
             const modelCount = vehicles.filter((v) => v.make === make).length;
+            const bgImage =
+              marque.imageUrl ||
+              vehicles.find((v) => v.make === make && v.imageUrl)?.imageUrl ||
+              MAKE_DETAILS[make]?.bgImage ||
+              'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=800&auto=format&fit=crop';
+            const logoText = marque.logoText || MAKE_DETAILS[make]?.logoText || make.toUpperCase();
+            const modelsText =
+              marque.modelsDescription ||
+              MAKE_DETAILS[make]?.models ||
+              (modelCount > 0 ? `${modelCount} Verified Models` : 'Precision OEM+ Fitment');
 
             return (
               <Link
@@ -142,13 +154,13 @@ export default async function StorefrontHomePage() {
                 className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-500/80 transition-all duration-500 ease-out flex flex-col justify-end p-4 sm:p-6 min-h-[180px] sm:min-h-[240px] shadow-subtle hover:shadow-elevated hover:-translate-y-2"
               >
                 {/* Background image with refined clean overlay */}
-                {meta.bgImage && (
+                {bgImage && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
-                      src={meta.bgImage}
+                      src={bgImage}
                       alt={make}
                       fill
-                      sizes="(max-width: 640px) 50vw, 25vw"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       className="object-cover object-center filter brightness-[0.80] contrast-105 group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/60 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
@@ -159,7 +171,7 @@ export default async function StorefrontHomePage() {
                 <div className="relative z-10 space-y-1 sm:space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] sm:text-[10px] font-label uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold group-hover:bg-red-600/40 group-hover:border-red-400/60 transition-all duration-300 ease-out">
-                      {meta.logoText}
+                      {logoText}
                     </span>
                     <span className="text-[10px] sm:text-[11px] text-slate-300 font-label font-medium hidden sm:inline">
                       {modelCount} Models
@@ -171,7 +183,7 @@ export default async function StorefrontHomePage() {
                   </h3>
 
                   <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 leading-snug font-label">
-                    {meta.models}
+                    {modelsText}
                   </p>
 
                   <div className="pt-1 sm:pt-2 flex items-center text-[11px] sm:text-xs font-bold text-white group-hover:text-red-400 transition-all duration-300 ease-out">

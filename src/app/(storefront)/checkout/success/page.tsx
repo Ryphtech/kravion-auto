@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   ArrowRight,
+  Package,
 } from 'lucide-react';
 
 function CheckoutSuccessContent() {
@@ -96,8 +97,15 @@ function CheckoutSuccessContent() {
         </div>
       )}
 
-      {/* Continue Browsing Action */}
-      <div className="pt-4 text-center">
+      {/* Navigation Actions */}
+      <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <Link
+          href="/orders"
+          className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#DC2626] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm"
+        >
+          <Package className="w-4 h-4" />
+          <span>View in My Orders</span>
+        </Link>
         <Link
           href="/products"
           className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm"

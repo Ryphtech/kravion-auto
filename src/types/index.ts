@@ -157,6 +157,16 @@ export interface StoreSettings {
   announcementText?: string;
 }
 
+export interface MarqueConfig {
+  make: string;
+  featuredOnHome: boolean;
+  imageUrl: string;
+  tagline?: string;
+  modelsDescription?: string;
+  logoText?: string;
+  displayOrder?: number;
+}
+
 export interface ProductFilter {
   category?: string;
   make?: string;
