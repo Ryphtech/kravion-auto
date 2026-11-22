@@ -8,6 +8,7 @@ import { initialProducts, initialCategories, initialVehicles } from '@/lib/seed-
 import { checkCompatibility } from '@/lib/compatibility';
 import { ProductCard } from '@/components/storefront/ProductCard';
 import { Product, Category, Vehicle } from '@/types';
+import { useTypewriterPlaceholder } from '@/hooks/useTypewriterPlaceholder';
 import {
   Search,
   Filter,
@@ -35,6 +36,9 @@ function ProductsCatalogContent() {
   const [selectedModel, setSelectedModel] = useState(searchParams.get('model') || '');
   const [fitsGarageOnly, setFitsGarageOnly] = useState(searchParams.get('fitsGarage') === 'true');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'featured');
+
+  // Animated typewriter placeholder cycling through luxury suggestions
+  const placeholderText = useTypewriterPlaceholder();
 
   // Sync state if URL changes
   useEffect(() => {
@@ -347,20 +351,21 @@ function ProductsCatalogContent() {
       {/* Main Filter Control Bar */}
       <div className="space-y-4">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-          {/* Search Box */}
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          {/* Search Box with Typewriter Suggestions */}
+          <div className="relative flex-1 group">
+            <Search className="w-4 h-4 text-slate-400 group-focus-within:text-[#DC2626] transition-colors absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
-              placeholder="Search by keyword (diffuser, spoiler, ambient, tweeters, exhaust)..."
+              placeholder={placeholderText ? `Search "${placeholderText}"...` : 'Search by keyword (diffuser, spoiler, ambient, tweeters, exhaust)...'}
               className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-10 pr-9 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all shadow-sm font-medium"
             />
             {searchQuery && (
               <button
                 onClick={() => handleSearchChange('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-0.5 rounded-full"
+                aria-label="Clear search query"
               >
                 <X className="w-4 h-4" />
               </button>

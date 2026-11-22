@@ -314,6 +314,7 @@ export function ManageableProductSection({
             showAdminControls={adminMode || isAdminUser}
             onEdit={handleOpenEdit}
             onDelete={handleOpenDelete}
+            addButtonVariant={sectionId === 'new-arrivals' ? 'red' : 'default'}
           />
         ))}
       </div>

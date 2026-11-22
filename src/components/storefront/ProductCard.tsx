@@ -27,6 +27,7 @@ interface ProductCardProps {
   showAdminControls?: boolean;
   onEdit?: (product: Product) => void;
   onDelete?: (product: Product) => void;
+  addButtonVariant?: 'red' | 'default';
 }
 
 export function ProductCard({
@@ -34,6 +35,7 @@ export function ProductCard({
   showAdminControls = false,
   onEdit,
   onDelete,
+  addButtonVariant = 'default',
 }: ProductCardProps) {
   const { selectedVehicle, openGarageModal, isHydrated } = useGarage();
   const { addItem } = useCart();
@@ -249,7 +251,9 @@ export function ProductCard({
               addedRecently
                 ? 'bg-emerald-600 text-white shadow-emerald-500/20'
                 : inStock
-                ? 'bg-[#0F172A] hover:bg-[#DC2626] text-white hover:shadow-red-500/25'
+                ? addButtonVariant === 'red'
+                  ? 'bg-[#DC2626] hover:bg-red-700 text-white shadow-md shadow-red-600/25 hover:shadow-red-600/40'
+                  : 'bg-[#0F172A] hover:bg-[#DC2626] text-white hover:shadow-red-500/25'
                 : 'bg-slate-100 text-slate-400 cursor-not-allowed'
             }`}
             title="Add to shopping cart"
