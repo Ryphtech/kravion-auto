@@ -12,6 +12,7 @@ import { HeroCarousel } from '@/components/storefront/HeroCarousel';
 import { ProductCard } from '@/components/storefront/ProductCard';
 import { FeaturedScrollStack } from '@/components/storefront/FeaturedScrollStack';
 import { ManageableProductSection } from '@/components/storefront/ManageableProductSection';
+import { Product } from '@/types';
 import {
   ArrowRight,
   Sparkles,
@@ -67,8 +68,18 @@ export default async function StorefrontHomePage() {
     getMarqueConfigs(),
   ]);
 
-  const featuredProducts = products.filter((p) => p.featured).slice(0, 8);
-  const displayProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 8);
+  // In-stock validation helper
+  const isProductInStock = (p: Product) =>
+    p.inStock !== false && (p.stockQuantity === undefined || p.stockQuantity > 0);
+
+  // Featured products: must be marked featured AND currently in stock (out-of-stock products excluded from featured section)
+  const featuredProducts = products
+    .filter((p) => p.featured && isProductInStock(p))
+    .slice(0, 8);
+  const displayProducts =
+    featuredProducts.length > 0
+      ? featuredProducts
+      : products.filter(isProductInStock).slice(0, 8);
 
   // New arrivals sorted by creation date (newest first) irrespective of category
   const newArrivals = [...products]
@@ -261,34 +272,36 @@ export default async function StorefrontHomePage() {
         </div>
       </section>
 
-      {/* 4. Featured & Trending Products Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
-              <Zap className="w-4 h-4" />
-              <span>Trending Now</span>
+      {/* 4. Featured & Trending Products Grid (Only in-stock products displayed) */}
+      {displayProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
+                <Zap className="w-4 h-4" />
+                <span>Trending Now</span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+                Featured Catalogue
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-label">
+                Precision-fit performance parts and luxury accessories ready for express dispatch.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
-              Featured Catalogue
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-label">
-              Precision-fit performance parts and luxury accessories ready for express dispatch.
-            </p>
+
+            <Link
+              href="/products"
+              className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label"
+            >
+              <span>View All ({displayProducts.length}) Products</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
 
-          <Link
-            href="/products"
-            className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label"
-          >
-            <span>View All ({products.length}) Products</span>
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        {/* Featured Catalogue ScrollStack Showcase */}
-        <FeaturedScrollStack products={displayProducts} />
-      </section>
+          {/* Featured Catalogue ScrollStack Showcase */}
+          <FeaturedScrollStack products={displayProducts} />
+        </section>
+      )}
 
       {/* 5. New Arrivals Grid with Direct Edit/Modify/Delete capability (2 cards per row on mobile) */}
       <ManageableProductSection

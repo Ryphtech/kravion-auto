@@ -367,7 +367,14 @@ function ProductsCatalogContent() {
                 }
               }}
               placeholder={placeholderText ? `Search "${placeholderText}"...` : 'Search by keyword (diffuser, spoiler, ambient, tweeters, exhaust)...'}
-              style={{ outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
+              style={{
+                outline: 'none',
+                boxShadow: 'none',
+                WebkitAppearance: 'none',
+                appearance: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                paddingLeft: '40px',
+              }}
               className="w-full bg-white border border-[#E2E8F0] focus:border-slate-400 rounded-xl pl-10 pr-9 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-all shadow-sm font-medium placeholder:truncate"
             />
             {searchQuery && (

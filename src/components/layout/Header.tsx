@@ -147,7 +147,13 @@ export function Header() {
                 <button
                   type="submit"
                   aria-label="Search"
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 rounded-full focus:outline-none transition-colors"
+                  onClick={() => {
+                    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+                      document.activeElement.blur();
+                    }
+                    mobileSearchInputRef.current?.blur();
+                  }}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center justify-center p-1 rounded-full outline-none focus:outline-none transition-colors"
                 >
                   <Search
                     className={`w-3.5 h-3.5 transition-colors duration-200 ${
@@ -163,9 +169,22 @@ export function Header() {
                   enterKeyHint="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.currentTarget.blur();
+                    }
+                  }}
                   placeholder={placeholderText ? `Search "${placeholderText}"...` : 'Search products...'}
-                  style={{ outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
-                  className={`w-full h-full bg-transparent pl-9 pr-8 text-xs font-medium rounded-full outline-none focus:outline-none focus:ring-0 focus:border-transparent transition-colors placeholder:truncate ${
+                  style={{
+                    outline: 'none',
+                    boxShadow: 'none',
+                    WebkitAppearance: 'none',
+                    appearance: 'none',
+                    WebkitTapHighlightColor: 'transparent',
+                    paddingLeft: '36px',
+                    paddingRight: '32px',
+                  }}
+                  className={`w-full h-full bg-transparent pl-10 pr-8 text-xs font-medium rounded-full outline-none focus:outline-none focus:ring-0 focus:border-transparent transition-colors placeholder:truncate ${
                     isTransparent
                       ? 'text-white placeholder:text-white/60'
                       : 'text-[#0F172A] placeholder:text-slate-400'
@@ -521,12 +540,24 @@ export function Header() {
                     enterKeyHint="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.currentTarget.blur();
+                      }
+                    }}
                     placeholder={
                       placeholderText
                         ? `Search "${placeholderText}"...`
                         : 'Search carbon splitters, ambient cockpits, matrix lights, audio...'
                     }
-                    style={{ outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
+                    style={{
+                      outline: 'none',
+                      boxShadow: 'none',
+                      WebkitAppearance: 'none',
+                      appearance: 'none',
+                      WebkitTapHighlightColor: 'transparent',
+                      paddingLeft: '40px',
+                    }}
                     className={`w-full h-full bg-transparent pl-10 pr-9 text-sm rounded-2xl outline-none focus:outline-none focus:ring-0 focus:border-transparent transition-all placeholder:truncate ${
                       isTransparent
                         ? 'text-white placeholder:text-white/60'

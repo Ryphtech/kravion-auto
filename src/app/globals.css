@@ -47,10 +47,42 @@ html {
   background: #94A3B8;
 }
 
-/* Smooth Focus States */
-*:focus-visible {
+/* Smooth Focus States for keyboard accessibility */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #DC2626;
+}
+
+/* Form inputs & search bars manage their own focus styles, suppress global rings */
+input,
+input:focus,
+input:focus-visible,
+textarea,
+textarea:focus,
+textarea:focus-visible,
+select,
+select:focus,
+select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Normalize search inputs across iOS Safari, Chrome Android & Desktop */
+input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  display: none;
 }
 
 /* Keyframe Animations & Easing Utilities */

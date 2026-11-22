@@ -61,6 +61,15 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
 
   const activeVehicle = isHydrated ? selectedVehicle : null;
 
+  // Only display in-stock products in the featured section
+  const inStockProducts = products.filter(
+    (p) => p.inStock !== false && (p.stockQuantity === undefined || p.stockQuantity > 0)
+  );
+
+  if (inStockProducts.length === 0) {
+    return null;
+  }
+
   return (
     <div className="space-y-4">
       {/* Scroll Stack Interactive Container */}
@@ -68,7 +77,7 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
         {/* Helper Hints: Left Tag & Right Scroll Indicator */}
         <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-5 z-30 flex items-center space-x-1 text-[10px] sm:text-[11px] font-label font-bold text-[#DC2626] uppercase tracking-wider bg-red-50/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1 rounded-full border border-red-200/80 shadow-sm pointer-events-none">
           <Sparkles className="w-3 h-3 text-[#DC2626]" />
-          <span>Curated ({products.length})</span>
+          <span>Curated ({inStockProducts.length})</span>
         </div>
 
         <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-5 z-30 flex items-center space-x-1.5 text-[10px] sm:text-[11px] font-label font-bold text-slate-600 uppercase tracking-wider bg-white/95 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1 rounded-full border border-slate-200/90 shadow-sm pointer-events-none">
@@ -92,7 +101,7 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
           useWindowScroll={false}
           className="h-full"
         >
-          {products.map((product, idx) => {
+          {inStockProducts.map((product, idx) => {
             const inWishlist = isInWishlist(product.id);
             const isAdded = !!addedMap[product.id];
             const compatibility = checkCompatibility(product, activeVehicle);
