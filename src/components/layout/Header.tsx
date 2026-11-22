@@ -79,8 +79,10 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
     // Dismiss mobile virtual keyboard immediately
     if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -88,12 +90,14 @@ export function Header() {
     mobileSearchInputRef.current?.blur();
     desktopSearchInputRef.current?.blur();
 
-    const query = searchQuery.trim() || placeholderText;
+    const query = searchQuery.trim() || placeholderText?.trim();
     if (query) {
       router.push(`/products?search=${encodeURIComponent(query)}`);
-      setSearchOpen(false);
-      setMobileMenuOpen(false);
+    } else {
+      router.push('/products');
     }
+    setSearchOpen(false);
+    setMobileMenuOpen(false);
   };
 
   const handleSignOut = async () => {
@@ -147,13 +151,7 @@ export function Header() {
                 <button
                   type="submit"
                   aria-label="Search"
-                  onClick={() => {
-                    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-                      document.activeElement.blur();
-                    }
-                    mobileSearchInputRef.current?.blur();
-                  }}
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center justify-center p-1 rounded-full outline-none focus:outline-none transition-colors"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center p-1 rounded-full outline-none focus:outline-none transition-colors cursor-pointer"
                 >
                   <Search
                     className={`w-3.5 h-3.5 transition-colors duration-200 ${
@@ -171,7 +169,8 @@ export function Header() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      e.currentTarget.blur();
+                      e.preventDefault();
+                      handleSearchSubmit();
                     }
                   }}
                   placeholder={placeholderText ? `Search "${placeholderText}"...` : 'Search products...'}
@@ -184,7 +183,7 @@ export function Header() {
                     paddingLeft: '36px',
                     paddingRight: '32px',
                   }}
-                  className={`w-full h-full bg-transparent pl-10 pr-8 text-xs font-medium rounded-full outline-none focus:outline-none focus:ring-0 focus:border-transparent transition-colors placeholder:truncate ${
+                  className={`w-full h-full bg-transparent pr-8 text-xs font-medium rounded-full outline-none focus:outline-none focus:ring-0 focus:border-transparent transition-colors placeholder:truncate ${
                     isTransparent
                       ? 'text-white placeholder:text-white/60'
                       : 'text-[#0F172A] placeholder:text-slate-400'
@@ -193,11 +192,12 @@ export function Header() {
                 {searchQuery && (
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setSearchQuery('');
                       mobileSearchInputRef.current?.focus();
                     }}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-all active:scale-90 ${
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full transition-all active:scale-90 cursor-pointer ${
                       isTransparent
                         ? 'text-white/70 hover:text-white hover:bg-white/20'
                         : 'text-slate-400 hover:text-slate-700 hover:bg-slate-200'
@@ -542,7 +542,8 @@ export function Header() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        e.currentTarget.blur();
+                        e.preventDefault();
+                        handleSearchSubmit();
                       }
                     }}
                     placeholder={
