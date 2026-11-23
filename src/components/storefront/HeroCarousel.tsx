@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   MessageCircle,
   Star,
+  Truck,
+  Headphones,
 } from 'lucide-react';
 
 interface HeroCarouselProps {
@@ -182,26 +184,27 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
         {/* Floating 3-Pillar Stats Card Overlapping the Hero Card Bottom */}
         <div className="mx-4 mt-2 rounded-2xl bg-white border border-[#E2E8F0] shadow-card p-3 grid grid-cols-3 divide-x divide-slate-100 relative z-20">
           <div className="flex flex-col items-center text-center px-1">
-            <div className="flex items-center space-x-1 text-[#DC2626] font-black text-sm">
-              <Star className="w-3.5 h-3.5 fill-red-500 text-red-500" />
-              <span>4.9/5</span>
+            <div className="flex items-center space-x-1 text-[#DC2626] font-black text-xs sm:text-sm">
+              <Truck className="w-3.5 h-3.5 text-[#DC2626]" />
+              <span>Fast Delivery</span>
             </div>
-            <span className="text-[10px] text-slate-500 font-medium font-label">CAD Fitments</span>
+            <span className="text-[10px] text-slate-500 font-medium font-label">Express Shipping</span>
           </div>
           <div className="flex flex-col items-center text-center px-1">
-            <div className="flex items-center space-x-1 text-slate-800 font-black text-sm">
-              <span>4 Marques</span>
+            <div className="flex items-center space-x-1 text-slate-800 font-black text-xs sm:text-sm">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#DC2626]" />
+              <span>Quality Tested</span>
             </div>
             <span className="text-[10px] text-slate-500 font-medium font-label truncate max-w-full">
-              Audi · BMW · Benz
+              100% Guaranteed
             </span>
           </div>
           <div className="flex flex-col items-center text-center px-1">
-            <div className="flex items-center space-x-1 text-emerald-600 font-black text-sm">
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Direct</span>
+            <div className="flex items-center space-x-1 text-emerald-600 font-black text-xs sm:text-sm">
+              <Headphones className="w-3.5 h-3.5 text-emerald-600" />
+              <span>24*7 Support</span>
             </div>
-            <span className="text-[10px] text-slate-500 font-medium font-label">WhatsApp</span>
+            <span className="text-[10px] text-slate-500 font-medium font-label">Customer Support</span>
           </div>
         </div>
       </div>
@@ -276,20 +279,20 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
             {/* Desktop Bottom Value Badges Strip */}
             <div className="mt-14 pt-6 border-t border-white/15 grid grid-cols-4 gap-4 text-slate-300 text-xs font-label">
               <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
-                <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                <span className="font-semibold text-white truncate">100% Precision CAD Fitment</span>
+                <Truck className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span className="font-semibold text-white truncate">Fast Delivery Worldwide</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
+                <ShieldCheck className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span className="font-semibold text-white truncate">100% Quality Tested</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
+                <Headphones className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="font-semibold text-white truncate">24*7 Customer Support</span>
               </div>
               <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
                 <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                <span className="font-semibold text-white truncate">Toray T700 Dry Carbon</span>
-              </div>
-              <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                <span className="font-semibold text-white truncate">Direct WhatsApp Concierge</span>
-              </div>
-              <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
-                <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                <span className="font-semibold text-white truncate">Audi · BMW · Mercedes · Porsche</span>
+                <span className="font-semibold text-white truncate">Precision Verified Fitment</span>
               </div>
             </div>
           </div>
