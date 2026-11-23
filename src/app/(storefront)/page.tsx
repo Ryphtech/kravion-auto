@@ -114,12 +114,10 @@ export default async function StorefrontHomePage() {
     activeMakeSet.has(m.make.toLowerCase().trim())
   );
 
-  // Display makes enabled by admin to show in Marque Selection on home
-  const featuredMarques = validMarques.filter((m) => m.featuredOnHome);
-  const displayMarques =
-    featuredMarques.length > 0
-      ? featuredMarques
-      : validMarques.slice(0, 4);
+  // Display ONLY makes enabled by admin to show in Marque Selection on home
+  const displayMarques = validMarques
+    .filter((m) => m.featuredOnHome)
+    .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
 
   return (
     <div className="space-y-12 sm:space-y-16 lg:space-y-24 pb-24 md:pb-20 font-sans">
