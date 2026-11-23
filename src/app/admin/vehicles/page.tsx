@@ -124,10 +124,17 @@ export default function AdminVehiclesPage() {
       .sort((a, b) => a.make.localeCompare(b.make));
   }, [vehicles]);
 
-  // Count of active marques on storefront home
+  // Set of active makes present in the vehicles database
+  const activeMakeSet = useMemo(() => {
+    return new Set(vehicles.map((v) => v.make.toLowerCase().trim()));
+  }, [vehicles]);
+
+  // Count of active marques on storefront home (strictly existing in active vehicles)
   const featuredHomeMakesCount = useMemo(() => {
-    return marqueConfigs.filter((m) => m.featuredOnHome).length;
-  }, [marqueConfigs]);
+    return marqueConfigs.filter(
+      (m) => m.featuredOnHome && activeMakeSet.has(m.make.toLowerCase().trim())
+    ).length;
+  }, [marqueConfigs, activeMakeSet]);
 
   // Open Vehicle Modal
   const handleOpenAddModal = (presetMake?: string) => {
@@ -853,12 +860,12 @@ export default function AdminVehiclesPage() {
                     : 'bg-white border border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
                 }`}
               >
-                Hidden ({makesWithModels.length - featuredHomeMakesCount})
+                Hidden ({Math.max(0, makesWithModels.length - featuredHomeMakesCount)})
               </button>
             </div>
 
             <span className="text-xs text-slate-500 font-label">
-              Active on Storefront Home: <strong className="text-emerald-600 font-bold">{featuredHomeMakesCount} Marques</strong>
+              Active on Storefront Home: <strong className="text-emerald-600 font-bold">{featuredHomeMakesCount} {featuredHomeMakesCount === 1 ? 'Marque' : 'Marques'}</strong>
             </span>
           </div>
 

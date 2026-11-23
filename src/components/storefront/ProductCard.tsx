@@ -124,7 +124,7 @@ export function ProductCard({
         {/* Top Badges: Category, Hot Deal & Wishlist */}
         <div className="absolute top-2 inset-x-2 sm:top-3 sm:inset-x-3 flex items-center justify-between z-10 gap-1">
           <div className="flex items-center gap-1 min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-label font-bold uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white truncate max-w-[85px] sm:max-w-none">
+            <span className="hidden sm:inline-block text-[9px] sm:text-[10px] font-label font-bold uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-white/90 backdrop-blur-md text-[#0F172A] border border-slate-200/80 shadow-sm transition-all duration-200 group-hover:bg-white truncate max-w-[85px] sm:max-w-none">
               {product.categoryName || product.category}
             </span>
             {discountPercent >= 30 && (
@@ -197,6 +197,15 @@ export function ProductCard({
       {/* Content Section */}
       <div className="p-2.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3 bg-white">
         <div className="space-y-1 sm:space-y-1.5">
+          {/* Mobile Category Tag */}
+          {(product.categoryName || product.category) && (
+            <div className="sm:hidden">
+              <span className="text-[10px] font-label font-bold uppercase tracking-wider text-slate-500 truncate block">
+                {product.categoryName || product.category}
+              </span>
+            </div>
+          )}
+
           {/* Rating */}
           <div className="flex items-center space-x-1.5 sm:space-x-2 text-xs font-label">
             <div className="flex items-center text-amber-500">

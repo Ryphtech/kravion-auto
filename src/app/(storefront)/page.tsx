@@ -106,107 +106,117 @@ export default async function StorefrontHomePage() {
       return (a.id || '').localeCompare(b.id || '');
     });
 
-  // Only display makes selected by admin to show in Marque Selection on home
-  const featuredMarques = marqueConfigs.filter((m) => m.featuredOnHome);
+  // Active makes that currently exist in the registered vehicles database
+  const activeMakeSet = new Set(vehicles.map((v) => v.make.toLowerCase().trim()));
+
+  // Only consider marques for makes that actually exist in the vehicle catalog
+  const validMarques = marqueConfigs.filter((m) =>
+    activeMakeSet.has(m.make.toLowerCase().trim())
+  );
+
+  // Display makes enabled by admin to show in Marque Selection on home
+  const featuredMarques = validMarques.filter((m) => m.featuredOnHome);
   const displayMarques =
     featuredMarques.length > 0
       ? featuredMarques
-      : marqueConfigs.slice(0, 4);
+      : validMarques.slice(0, 4);
 
   return (
     <div className="space-y-12 sm:space-y-16 lg:space-y-24 pb-24 md:pb-20 font-sans">
       {/* 1. Full-Bleed Edge-to-Edge Hero Banner */}
       <HeroCarousel posters={posters} />
 
-      {/* 2. Vehicle Makes Quick Filter Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
-              <Sparkles className="w-4 h-4" />
-              <span>Marque Selection</span>
+      {/* 2. Vehicle Makes Quick Filter Grid (Only shown when active makes exist) */}
+      {displayMarques.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2 text-xs font-label font-bold uppercase tracking-wider text-[#DC2626]">
+                <Sparkles className="w-4 h-4" />
+                <span>Marque Selection</span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
+                Select Your Marque
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-label">
+                Filter precision-engineered upgrades specifically verified for your vehicle platform.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-black tracking-tight text-[#0F172A] uppercase">
-              Select Your Marque
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-label">
-              Filter precision-engineered upgrades specifically verified for your vehicle platform.
-            </p>
+
+            <Link
+              href="/products"
+              className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label"
+            >
+              <span>View All {vehicles.length} Models</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
 
-          <Link
-            href="/products"
-            className="text-xs font-bold text-[#DC2626] hover:text-red-700 flex items-center space-x-1 transition-colors uppercase tracking-wider shrink-0 font-label"
-          >
-            <span>View All {vehicles.length} Models</span>
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+            {displayMarques.map((marque) => {
+              const make = marque.make;
+              const modelCount = vehicles.filter((v) => v.make === make).length;
+              const bgImage =
+                marque.imageUrl ||
+                vehicles.find((v) => v.make === make && v.imageUrl)?.imageUrl ||
+                MAKE_DETAILS[make]?.bgImage ||
+                'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=800&auto=format&fit=crop';
+              const logoText = marque.logoText || MAKE_DETAILS[make]?.logoText || make.toUpperCase();
+              const modelsText =
+                marque.modelsDescription ||
+                MAKE_DETAILS[make]?.models ||
+                (modelCount > 0 ? `${modelCount} Verified Models` : 'Precision OEM+ Fitment');
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {displayMarques.map((marque) => {
-            const make = marque.make;
-            const modelCount = vehicles.filter((v) => v.make === make).length;
-            const bgImage =
-              marque.imageUrl ||
-              vehicles.find((v) => v.make === make && v.imageUrl)?.imageUrl ||
-              MAKE_DETAILS[make]?.bgImage ||
-              'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=800&auto=format&fit=crop';
-            const logoText = marque.logoText || MAKE_DETAILS[make]?.logoText || make.toUpperCase();
-            const modelsText =
-              marque.modelsDescription ||
-              MAKE_DETAILS[make]?.models ||
-              (modelCount > 0 ? `${modelCount} Verified Models` : 'Precision OEM+ Fitment');
+              return (
+                <Link
+                  key={make}
+                  href={`/products?make=${encodeURIComponent(make)}`}
+                  className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-500/80 transition-all duration-500 ease-out flex flex-col justify-end p-4 sm:p-6 min-h-[180px] sm:min-h-[240px] shadow-subtle hover:shadow-elevated hover:-translate-y-2"
+                >
+                  {/* Background image with refined clean overlay */}
+                  {bgImage && (
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                      <Image
+                        src={bgImage}
+                        alt={make}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover object-center filter brightness-[0.80] contrast-105 group-hover:scale-110 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/60 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                    </div>
+                  )}
 
-            return (
-              <Link
-                key={make}
-                href={`/products?make=${encodeURIComponent(make)}`}
-                className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#E2E8F0] hover:border-red-500/80 transition-all duration-500 ease-out flex flex-col justify-end p-4 sm:p-6 min-h-[180px] sm:min-h-[240px] shadow-subtle hover:shadow-elevated hover:-translate-y-2"
-              >
-                {/* Background image with refined clean overlay */}
-                {bgImage && (
-                  <div className="absolute inset-0 z-0 overflow-hidden">
-                    <Image
-                      src={bgImage}
-                      alt={make}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover object-center filter brightness-[0.80] contrast-105 group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#0F172A]/60 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  {/* Card Content */}
+                  <div className="relative z-10 space-y-1 sm:space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] sm:text-[10px] font-label uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold group-hover:bg-red-600/40 group-hover:border-red-400/60 transition-all duration-300 ease-out">
+                        {logoText}
+                      </span>
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 font-label font-medium hidden sm:inline">
+                        {modelCount} Models
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-xl font-black text-white uppercase tracking-tight group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300 ease-out">
+                      {make}
+                    </h3>
+
+                    <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 leading-snug font-label">
+                      {modelsText}
+                    </p>
+
+                    <div className="pt-1 sm:pt-2 flex items-center text-[11px] sm:text-xs font-bold text-white group-hover:text-red-400 transition-all duration-300 ease-out">
+                      <span>Explore</span>
+                      <ArrowRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 ml-1 group-hover:translate-x-2 transition-transform duration-300 ease-out" />
+                    </div>
                   </div>
-                )}
-
-                {/* Card Content */}
-                <div className="relative z-10 space-y-1 sm:space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] sm:text-[10px] font-label uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold group-hover:bg-red-600/40 group-hover:border-red-400/60 transition-all duration-300 ease-out">
-                      {logoText}
-                    </span>
-                    <span className="text-[10px] sm:text-[11px] text-slate-300 font-label font-medium hidden sm:inline">
-                      {modelCount} Models
-                    </span>
-                  </div>
-
-                  <h3 className="text-base sm:text-xl font-black text-white uppercase tracking-tight group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300 ease-out">
-                    {make}
-                  </h3>
-
-                  <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 leading-snug font-label">
-                    {modelsText}
-                  </p>
-
-                  <div className="pt-1 sm:pt-2 flex items-center text-[11px] sm:text-xs font-bold text-white group-hover:text-red-400 transition-all duration-300 ease-out">
-                    <span>Explore</span>
-                    <ArrowRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 ml-1 group-hover:translate-x-2 transition-transform duration-300 ease-out" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* 3. Categories Showcase Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">

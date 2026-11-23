@@ -701,6 +701,9 @@ export async function saveVehicle(vehicle: Partial<Vehicle>): Promise<string> {
  * Resilient deletion of a vehicle
  */
 export async function deleteVehicle(id: string): Promise<void> {
+  const vehToDelete = inMemoryVehicles.find((v) => v.id === id);
+  const makeToCheck = vehToDelete?.make;
+
   inMemoryVehicles = inMemoryVehicles.filter((v) => v.id !== id);
 
   try {
@@ -708,6 +711,14 @@ export async function deleteVehicle(id: string): Promise<void> {
     await deleteDoc(docRef);
   } catch (error) {
     console.warn('Firestore vehicle delete blocked (using resilient session fallback):', error);
+  }
+
+  // If no remaining vehicles exist for this make, remove the marque config as well
+  if (
+    makeToCheck &&
+    !inMemoryVehicles.some((v) => v.make.toLowerCase() === makeToCheck.toLowerCase())
+  ) {
+    await deleteMarqueConfig(makeToCheck);
   }
 }
 
@@ -826,10 +837,7 @@ export async function deleteMake(makeName: string): Promise<number> {
     }
   }
 
-  if (inMemoryMarqueConfigs[clean]) {
-    delete inMemoryMarqueConfigs[clean];
-    saveAllMarqueConfigs(Object.values(inMemoryMarqueConfigs)).catch(() => {});
-  }
+  await deleteMarqueConfig(clean);
 
   return toDelete.length;
 }
@@ -861,6 +869,37 @@ export async function addMake(
 
   await saveVehicle(newVehicle);
   return id;
+}
+
+/**
+ * Delete a marque config by vehicle make
+ */
+export async function deleteMarqueConfig(makeName: string): Promise<void> {
+  const clean = makeName.trim().toLowerCase();
+  if (!clean) return;
+
+  const updated: Record<string, MarqueConfig> = {};
+  for (const [key, val] of Object.entries(inMemoryMarqueConfigs)) {
+    if (key.toLowerCase() !== clean && val.make.toLowerCase() !== clean) {
+      updated[val.make] = val;
+    }
+  }
+  inMemoryMarqueConfigs = updated;
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('kravion_marque_configs', JSON.stringify(inMemoryMarqueConfigs));
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  try {
+    const docRef = doc(db, 'settings', 'marques');
+    await setDoc(docRef, { marques: inMemoryMarqueConfigs });
+  } catch (error) {
+    console.warn('Firestore marque deletion blocked (using resilient fallback):', error);
+  }
 }
 
 /**
@@ -896,19 +935,46 @@ export async function getMarqueConfigs(): Promise<MarqueConfig[]> {
     // Resilient fallback to memory/localStorage
   }
 
-  // 3. Ensure every active make in vehicles is present in marque configs
+  // 3. Ensure every active make in vehicles is present in marque configs, and prune orphan makes
   try {
     const vehicles = await getVehicles();
-    const allMakes = Array.from(new Set(vehicles.map((v) => v.make))).sort();
+    const allMakes = Array.from(new Set(vehicles.map((v) => v.make.trim()))).sort();
+    const activeMakeSet = new Set(allMakes.map((m) => m.toLowerCase()));
+
+    // If vehicles exist in the database, prune any marque configs whose makes no longer exist
+    if (vehicles.length > 0) {
+      const pruned: Record<string, MarqueConfig> = {};
+      let changed = false;
+      for (const [key, config] of Object.entries(inMemoryMarqueConfigs)) {
+        if (activeMakeSet.has(config.make.toLowerCase().trim())) {
+          pruned[config.make] = config;
+        } else {
+          changed = true;
+        }
+      }
+      if (changed) {
+        inMemoryMarqueConfigs = pruned;
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem('kravion_marque_configs', JSON.stringify(inMemoryMarqueConfigs));
+          } catch (e) {}
+        }
+        try {
+          const docRef = doc(db, 'settings', 'marques');
+          await setDoc(docRef, { marques: inMemoryMarqueConfigs });
+        } catch (e) {}
+      }
+    }
+
     allMakes.forEach((make, idx) => {
       if (!inMemoryMarqueConfigs[make]) {
         const matchingVeh = vehicles.find((v) => v.make === make && v.imageUrl);
         inMemoryMarqueConfigs[make] = {
           make,
-          featuredOnHome: false,
+          featuredOnHome: true,
           imageUrl: matchingVeh?.imageUrl || '',
           tagline: 'Precision OEM+ Fitment',
-          modelsDescription: `${vehicles.filter((v) => v.make === make).length} Models`,
+          modelsDescription: `${vehicles.filter((v) => v.make === make).length} Models Available`,
           logoText: make.toUpperCase(),
           displayOrder: 10 + idx,
         };
@@ -945,7 +1011,7 @@ export async function saveMarqueConfig(config: MarqueConfig): Promise<void> {
 
   try {
     const docRef = doc(db, 'settings', 'marques');
-    await setDoc(docRef, { marques: inMemoryMarqueConfigs }, { merge: true });
+    await setDoc(docRef, { marques: inMemoryMarqueConfigs });
   } catch (error) {
     console.warn('Firestore marque config update blocked (using resilient session fallback):', error);
   }
@@ -955,9 +1021,9 @@ export async function saveMarqueConfig(config: MarqueConfig): Promise<void> {
  * Batch save/update all marque configurations
  */
 export async function saveAllMarqueConfigs(configs: MarqueConfig[]): Promise<void> {
-  const newMap: Record<string, MarqueConfig> = { ...inMemoryMarqueConfigs };
+  const newMap: Record<string, MarqueConfig> = {};
   for (const c of configs) {
-    if (c.make) {
+    if (c && c.make) {
       newMap[c.make.trim()] = { ...c, make: c.make.trim() };
     }
   }
@@ -973,7 +1039,7 @@ export async function saveAllMarqueConfigs(configs: MarqueConfig[]): Promise<voi
 
   try {
     const docRef = doc(db, 'settings', 'marques');
-    await setDoc(docRef, { marques: inMemoryMarqueConfigs }, { merge: true });
+    await setDoc(docRef, { marques: inMemoryMarqueConfigs });
   } catch (error) {
     console.warn('Firestore batch marques save blocked (using resilient fallback):', error);
   }
