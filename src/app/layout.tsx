@@ -21,6 +21,15 @@ export const metadata: Metadata = {
   title: 'Kravion Auto — Luxury Automotive Accessories & Parts',
   description:
     'Bespoke ambient lighting, dry carbon fiber aerodynamics, high-fidelity audio, and precision performance accessories with guaranteed vehicle fitment.',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/logo.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
