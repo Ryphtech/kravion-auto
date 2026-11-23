@@ -179,7 +179,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="font-bold text-[#0F172A] hover:text-[#DC2626] transition-colors underline decoration-slate-300 underline-offset-4 hover:decoration-[#DC2626]"
               >
-                ryphtech (ryphtech.in)
+                Ryph Tech
               </a>
             </p>
           </div>
