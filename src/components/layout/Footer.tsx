@@ -164,11 +164,25 @@ export function Footer() {
       <div className="border-t border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-label gap-3">
           <p>© {currentYear} Kravion Auto Inc. All rights reserved.</p>
-          <p className="flex items-center space-x-2">
-            <span>Precision engineered for German luxury vehicles.</span>
-            <span className="text-[#DC2626] font-bold">•</span>
-            <span>WhatsApp Order Hand-Off</span>
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-right">
+            <p className="flex items-center space-x-2">
+              <span>Precision engineered for German luxury vehicles.</span>
+              <span className="text-[#DC2626] font-bold">•</span>
+              <span>WhatsApp Order Hand-Off</span>
+            </p>
+            <span className="hidden sm:inline text-slate-300">|</span>
+            <p>
+              Designed and Developed by{' '}
+              <a
+                href="https://ryphtech.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-[#0F172A] hover:text-[#DC2626] transition-colors underline decoration-slate-300 underline-offset-4 hover:decoration-[#DC2626]"
+              >
+                ryphtech (ryphtech.in)
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
