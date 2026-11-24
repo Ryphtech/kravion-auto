@@ -266,13 +266,6 @@ export function HeroCarousel({ posters }: HeroCarouselProps) {
                   <span>{currentDesktopPoster.buttonText || 'Explore Upgrades'}</span>
                   <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-200 ease-out" />
                 </Link>
-                <Link
-                  href="/products?fitsGarage=true"
-                  className="inline-flex items-center justify-center space-x-2 px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/20 hover:-translate-y-0.5 active:scale-95 backdrop-blur-md text-white border border-white/25 font-bold text-sm uppercase tracking-wider transition-all duration-200 ease-out shadow-md"
-                >
-                  <ShieldCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform duration-200" />
-                  <span>Verify Fitment</span>
-                </Link>
               </div>
             </div>
 
