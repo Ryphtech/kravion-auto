@@ -10,7 +10,6 @@ import {
   ArrowRight,
   AlertCircle,
   Sparkles,
-  ShieldAlert,
 } from 'lucide-react';
 
 function LoginForm() {
@@ -111,19 +110,6 @@ function LoginForm() {
             Sign in to access your Kravion Auto account, saved garage vehicles, and WhatsApp checkout concierge.
           </p>
         </div>
-
-        {/* Admin Access Required Banner */}
-        {isAdminRedirect && (
-          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-xs flex items-start space-x-3 font-label">
-            <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <div className="leading-relaxed">
-              <span className="font-bold block text-amber-950">
-                Administrator Authentication Required
-              </span>
-              Please sign in with your authorized admin credentials (<strong className="font-mono text-slate-900">kravionauto@gmail.com</strong>) to access the Kravion Admin Console.
-            </div>
-          </div>
-        )}
 
         {/* Pre-Checkout Alert Banner */}
         {isCheckoutRedirect && (
