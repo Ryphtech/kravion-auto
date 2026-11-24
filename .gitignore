@@ -25,6 +25,7 @@ firebase-debug.log*
 *.log
 .env
 .env.local
+.env.example
 
 # local env files
 .env*.local
