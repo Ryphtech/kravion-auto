@@ -98,6 +98,9 @@ export const metadata: Metadata = {
     },
   },
   category: 'Automotive',
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
