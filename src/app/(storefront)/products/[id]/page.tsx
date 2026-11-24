@@ -18,21 +18,37 @@ export async function generateMetadata({
   const product = await getProductById(params.id);
   if (!product) {
     return {
-      title: 'Product Not Found — Kravion Auto',
+      title: 'Product Not Found',
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kravion-auto.vercel.app';
+  const imageUrl = product.featuredImage || product.images?.[0] || `${baseUrl}/logo.svg`;
+  const cleanDescription = (product.description || '').replace(/\s+/g, ' ').slice(0, 160);
+
   return {
-    title: `${product.title} — Kravion Auto`,
-    description: product.description,
+    title: product.title,
+    description: cleanDescription,
+    alternates: {
+      canonical: `/products/${product.id}`,
+    },
     openGraph: {
-      title: product.title,
-      description: product.description,
+      title: `${product.title} | Kravion Auto`,
+      description: cleanDescription,
+      url: `/products/${product.id}`,
+      type: 'article',
       images: [
         {
-          url: product.featuredImage || product.images?.[0] || '',
+          url: imageUrl,
+          alt: product.title,
         },
       ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.title} | Kravion Auto`,
+      description: cleanDescription,
+      images: [imageUrl],
     },
   };
 }
@@ -48,10 +64,77 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const allCategoryProducts = await getProducts({ category: product.category });
   const relatedProducts = allCategoryProducts.filter((p) => p.id !== product.id);
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kravion-auto.vercel.app';
+  const productImageUrl = product.featuredImage || product.images?.[0] || `${baseUrl}/logo.svg`;
+
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    image: product.images && product.images.length > 0 ? product.images : [productImageUrl],
+    description: product.description,
+    sku: product.id,
+    brand: {
+      '@type': 'Brand',
+      name: 'Kravion Auto',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `${baseUrl}/products/${product.id}`,
+      priceCurrency: 'INR',
+      price: product.price,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      availability:
+        product.inStock !== false
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Kravion Auto',
+      },
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: baseUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: `${baseUrl}/products`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `${baseUrl}/products/${product.id}`,
+      },
+    ],
+  };
+
   return (
-    <ProductDetailClient
-      product={product}
-      relatedProducts={relatedProducts}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <ProductDetailClient
+        product={product}
+        relatedProducts={relatedProducts}
+      />
+    </>
   );
 }
