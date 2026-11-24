@@ -70,7 +70,6 @@ npm run seed:firestore
 ```bash
 npm run build
 npm test
-node scripts/verify-cloud.mjs
 ```
 
 ---

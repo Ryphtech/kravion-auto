@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node scripts/test-engine.mjs",
-    "test:m2": "node scripts/test-milestone2.mjs",
-    "verify:cloud": "node scripts/verify-cloud.mjs",
+    "test": "node tests/e2e/runner.mjs",
     "seed:firestore": "node scripts/seed-firestore.mjs"
   },
   "dependencies": {
