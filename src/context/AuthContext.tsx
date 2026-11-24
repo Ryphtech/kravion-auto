@@ -22,6 +22,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { UserProfile } from '@/types';
 import { sanitizeFirestoreData } from '@/lib/data-service';
+import { formatAuthError } from '@/lib/utils';
 
 export interface AuthContextType {
   user: User | null;
@@ -138,14 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(fallbackProfile);
         return fallbackAdminUser;
       }
-      let friendly = 'Failed to sign in. Please check your credentials.';
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-        friendly = 'Invalid email or password. Please try again.';
-      } else if (err.code === 'auth/too-many-requests') {
-        friendly = 'Access temporarily disabled due to many failed attempts. Try again later.';
-      } else if (err.message) {
-        friendly = err.message;
-      }
+      const friendly = formatAuthError(err);
       setError(friendly);
       throw new Error(friendly);
     }
@@ -167,16 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(userProf);
         return credential.user;
       } catch (err: any) {
-        let friendly = 'Failed to create account.';
-        if (err.code === 'auth/email-already-in-use') {
-          friendly = 'This email address is already registered. Please sign in instead.';
-        } else if (err.code === 'auth/weak-password') {
-          friendly = 'Password should be at least 6 characters long.';
-        } else if (err.code === 'auth/invalid-email') {
-          friendly = 'Please enter a valid email address.';
-        } else if (err.message) {
-          friendly = err.message;
-        }
+        const friendly = formatAuthError(err);
         setError(friendly);
         throw new Error(friendly);
       }
@@ -194,12 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(userProf);
       return credential.user;
     } catch (err: any) {
-      let friendly = 'Google Sign-In failed or was cancelled.';
-      if (err.code === 'auth/popup-closed-by-user') {
-        friendly = 'Sign-in window closed before completing authentication.';
-      } else if (err.message) {
-        friendly = err.message;
-      }
+      const friendly = formatAuthError(err);
       setError(friendly);
       throw new Error(friendly);
     }

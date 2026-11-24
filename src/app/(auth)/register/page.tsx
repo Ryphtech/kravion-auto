@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { formatAuthError } from '@/lib/utils';
 import {
   Lock,
   Mail,
@@ -16,6 +17,13 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/';
+  const isAdminRedirect = redirectPath.includes('admin');
+
+  useEffect(() => {
+    if (isAdminRedirect) {
+      router.replace(`/login?redirect=${encodeURIComponent(redirectPath)}`);
+    }
+  }, [isAdminRedirect, redirectPath, router]);
 
   const { register, loginWithGoogle, error: authError, clearError } = useAuth();
 
@@ -39,6 +47,15 @@ function RegisterForm() {
       setLocalError('Please enter a valid email address.');
       return;
     }
+    if (
+      email.trim().toLowerCase() === 'kravionauto@gmail.com' ||
+      email.trim().toLowerCase().includes('admin')
+    ) {
+      setLocalError(
+        'Administrative accounts cannot be self-registered. Please sign in with your administrator credentials.'
+      );
+      return;
+    }
     if (password.length < 6) {
       setLocalError('Password must be at least 6 characters long.');
       return;
@@ -53,7 +70,7 @@ function RegisterForm() {
       await register(email.trim(), password, displayName.trim());
       router.push(redirectPath);
     } catch (err: any) {
-      setLocalError(err.message || 'Registration failed. Please try again.');
+      setLocalError(formatAuthError(err));
     } finally {
       setSubmitting(false);
     }
@@ -67,13 +84,13 @@ function RegisterForm() {
       await loginWithGoogle();
       router.push(redirectPath);
     } catch (err: any) {
-      setLocalError(err.message || 'Google sign-in could not be completed.');
+      setLocalError(formatAuthError(err));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const displayedError = localError || authError;
+  const displayedError = localError ? formatAuthError(localError) : (authError ? formatAuthError(authError) : null);
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">

@@ -205,7 +205,14 @@ export default function CheckoutPage() {
       router.push(`/checkout/success?orderId=${encodeURIComponent(result.id)}&ref=${encodeURIComponent(orderRef)}`);
     } catch (err: any) {
       console.error('Order submission error:', err);
-      setFormError(err.message || 'Failed to submit order enquiry. Please try again.');
+      const cleanMsg =
+        err?.message &&
+        !err.message.toLowerCase().includes('firebase') &&
+        !err.message.toLowerCase().includes('firestore') &&
+        !err.message.includes('permission')
+          ? err.message
+          : 'Failed to submit order enquiry. Please verify your details and try again.';
+      setFormError(cleanMsg);
       setSubmitting(false);
     }
   };

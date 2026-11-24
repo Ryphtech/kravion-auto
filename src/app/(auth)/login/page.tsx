@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { formatAuthError } from '@/lib/utils';
 import {
   Lock,
   Mail,
@@ -50,7 +51,7 @@ function LoginForm() {
         router.push(redirectPath);
       }
     } catch (err: any) {
-      setLocalError(err.message || 'Authentication failed. Please verify credentials.');
+      setLocalError(formatAuthError(err));
     } finally {
       setSubmitting(false);
     }
@@ -72,13 +73,13 @@ function LoginForm() {
         router.push(redirectPath);
       }
     } catch (err: any) {
-      setLocalError(err.message || 'Google sign-in could not be completed.');
+      setLocalError(formatAuthError(err));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const displayedError = localError || authError;
+  const displayedError = localError ? formatAuthError(localError) : (authError ? formatAuthError(authError) : null);
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
@@ -104,10 +105,12 @@ function LoginForm() {
             </Link>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight">
-            Welcome Back
+            {isAdminRedirect ? 'Admin Sign In' : 'Welcome Back'}
           </h2>
           <p className="text-xs text-slate-500 font-label">
-            Sign in to access your Kravion Auto account, saved garage vehicles, and WhatsApp checkout concierge.
+            {isAdminRedirect
+              ? 'Sign in to access the Kravion Auto administrative management console.'
+              : 'Sign in to access your Kravion Auto account, saved garage vehicles, and WhatsApp checkout concierge.'}
           </p>
         </div>
 
@@ -223,18 +226,20 @@ function LoginForm() {
           <span>Sign In with Google</span>
         </button>
 
-        {/* Footer Link */}
-        <div className="text-center pt-2 font-label">
-          <p className="text-xs text-slate-500">
-            Don&apos;t have an account?{' '}
-            <Link
-              href={`/register?redirect=${encodeURIComponent(redirectPath)}`}
-              className="text-[#DC2626] hover:text-red-700 font-bold underline underline-offset-4 transition-colors"
-            >
-              Create Account
-            </Link>
-          </p>
-        </div>
+        {/* Footer Link - Hidden when accessing Admin Console */}
+        {!isAdminRedirect && (
+          <div className="text-center pt-2 font-label">
+            <p className="text-xs text-slate-500">
+              Don&apos;t have an account?{' '}
+              <Link
+                href={`/register?redirect=${encodeURIComponent(redirectPath)}`}
+                className="text-[#DC2626] hover:text-red-700 font-bold underline underline-offset-4 transition-colors"
+              >
+                Create Account
+              </Link>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
