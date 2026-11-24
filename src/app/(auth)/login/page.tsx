@@ -10,6 +10,7 @@ import {
   ArrowRight,
   AlertCircle,
   Sparkles,
+  ShieldAlert,
 } from 'lucide-react';
 
 function LoginForm() {
@@ -25,6 +26,7 @@ function LoginForm() {
   const [localError, setLocalError] = useState<string | null>(null);
 
   const isCheckoutRedirect = redirectPath.includes('checkout');
+  const isAdminRedirect = redirectPath.includes('admin');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +40,16 @@ function LoginForm() {
 
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
-      router.push(redirectPath);
+      const loggedInUser = await login(email.trim(), password);
+      const isUserAdmin =
+        loggedInUser.email?.toLowerCase().trim() === 'kravionauto@gmail.com' ||
+        Boolean(loggedInUser.email?.toLowerCase().includes('admin'));
+
+      if (isAdminRedirect || (isUserAdmin && redirectPath === '/')) {
+        router.push(isAdminRedirect ? redirectPath : '/admin');
+      } else {
+        router.push(redirectPath);
+      }
     } catch (err: any) {
       setLocalError(err.message || 'Authentication failed. Please verify credentials.');
     } finally {
@@ -52,8 +62,16 @@ function LoginForm() {
     clearError();
     setSubmitting(true);
     try {
-      await loginWithGoogle();
-      router.push(redirectPath);
+      const loggedInUser = await loginWithGoogle();
+      const isUserAdmin =
+        loggedInUser.email?.toLowerCase().trim() === 'kravionauto@gmail.com' ||
+        Boolean(loggedInUser.email?.toLowerCase().includes('admin'));
+
+      if (isAdminRedirect || (isUserAdmin && redirectPath === '/')) {
+        router.push(isAdminRedirect ? redirectPath : '/admin');
+      } else {
+        router.push(redirectPath);
+      }
     } catch (err: any) {
       setLocalError(err.message || 'Google sign-in could not be completed.');
     } finally {
@@ -93,6 +111,19 @@ function LoginForm() {
             Sign in to access your Kravion Auto account, saved garage vehicles, and WhatsApp checkout concierge.
           </p>
         </div>
+
+        {/* Admin Access Required Banner */}
+        {isAdminRedirect && (
+          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-xs flex items-start space-x-3 font-label">
+            <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="leading-relaxed">
+              <span className="font-bold block text-amber-950">
+                Administrator Authentication Required
+              </span>
+              Please sign in with your authorized admin credentials (<strong className="font-mono text-slate-900">kravionauto@gmail.com</strong>) to access the Kravion Admin Console.
+            </div>
+          </div>
+        )}
 
         {/* Pre-Checkout Alert Banner */}
         {isCheckoutRedirect && (
