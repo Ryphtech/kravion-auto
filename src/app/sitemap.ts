@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getProducts, getCategories } from '@/lib/data-service';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kravion-auto.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.kravionauto.com';
 
   let products: any[] = [];
   let categories: any[] = [];

@@ -17,7 +17,7 @@ const inter = Inter({
   display: 'swap',
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kravion-auto.vercel.app';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.kravionauto.com';
 
 export const viewport: Viewport = {
   themeColor: '#DC2626',

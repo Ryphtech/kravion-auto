@@ -22,7 +22,7 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kravion-auto.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.kravionauto.com';
   const imageUrl = product.featuredImage || product.images?.[0] || `${baseUrl}/logo.svg`;
   const cleanDescription = (product.description || '').replace(/\s+/g, ' ').slice(0, 160);
 
@@ -64,7 +64,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const allCategoryProducts = await getProducts({ category: product.category });
   const relatedProducts = allCategoryProducts.filter((p) => p.id !== product.id);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kravion-auto.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.kravionauto.com';
   const productImageUrl = product.featuredImage || product.images?.[0] || `${baseUrl}/logo.svg`;
 
   const productJsonLd = {
