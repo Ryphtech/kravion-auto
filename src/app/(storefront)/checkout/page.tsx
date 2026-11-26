@@ -34,7 +34,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('United States');
+  const [country, setCountry] = useState('');
 
   // Vehicle info
   const [vehicleMake, setVehicleMake] = useState('');
@@ -142,7 +142,7 @@ export default function CheckoutPage() {
           city: city.trim(),
           state: state.trim() || 'N/A',
           postalCode: postalCode.trim(),
-          country: country.trim() || 'United States',
+          country: country.trim() || 'India',
         },
         vehicleInfo: {
           make: vehicleMake.trim() || 'General',
@@ -280,7 +280,6 @@ export default function CheckoutPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Marcus Vance"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -294,7 +293,6 @@ export default function CheckoutPage() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (555) 890-1234"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -308,7 +306,6 @@ export default function CheckoutPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="marcus@example.com"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -322,7 +319,6 @@ export default function CheckoutPage() {
                     required
                     value={street}
                     onChange={(e) => setStreet(e.target.value)}
-                    placeholder="742 Evergreen Terrace"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -335,7 +331,6 @@ export default function CheckoutPage() {
                     type="text"
                     value={apartment}
                     onChange={(e) => setApartment(e.target.value)}
-                    placeholder="Apt 4B"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -349,7 +344,6 @@ export default function CheckoutPage() {
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    placeholder="Springfield"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -362,7 +356,6 @@ export default function CheckoutPage() {
                     type="text"
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    placeholder="OR"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -376,7 +369,6 @@ export default function CheckoutPage() {
                     required
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
-                    placeholder="97477"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -389,7 +381,6 @@ export default function CheckoutPage() {
                     type="text"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    placeholder="United States"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -412,7 +403,6 @@ export default function CheckoutPage() {
                     type="text"
                     value={vehicleMake}
                     onChange={(e) => setVehicleMake(e.target.value)}
-                    placeholder="e.g. BMW"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -424,7 +414,6 @@ export default function CheckoutPage() {
                     type="text"
                     value={vehicleModel}
                     onChange={(e) => setVehicleModel(e.target.value)}
-                    placeholder="e.g. 3 Series (G20)"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -436,7 +425,6 @@ export default function CheckoutPage() {
                     type="text"
                     value={vehicleYear}
                     onChange={(e) => setVehicleYear(e.target.value)}
-                    placeholder="e.g. 2023"
                     className="w-full bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                   />
                 </div>
@@ -450,8 +438,7 @@ export default function CheckoutPage() {
                   rows={2}
                   value={vehicleNotes}
                   onChange={(e) => setVehicleNotes(e.target.value)}
-                  placeholder="e.g. Pre-LCI model with M Sport package and HUD..."
-                  className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#0F172A] placeholder-slate-400 focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
+                  className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                 />
               </div>
 
@@ -463,8 +450,7 @@ export default function CheckoutPage() {
                   rows={2}
                   value={customerNotes}
                   onChange={(e) => setCustomerNotes(e.target.value)}
-                  placeholder="Notes for the packaging or dispatch concierge..."
-                  className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#0F172A] placeholder-slate-400 focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
+                  className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#0F172A] focus:outline-none focus:border-[#DC2626] focus:ring-2 focus:ring-red-500/20 transition-all font-medium"
                 />
               </div>
             </div>
