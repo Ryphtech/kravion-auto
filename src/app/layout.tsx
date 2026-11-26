@@ -69,9 +69,9 @@ export const metadata: Metadata = {
     siteName: 'Kravion Auto',
     images: [
       {
-        url: '/logo.svg',
-        width: 800,
-        height: 600,
+        url: '/logo.png',
+        width: 512,
+        height: 512,
         alt: 'Kravion Auto — Luxury Automotive Upgrades',
       },
     ],
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     title: 'Kravion Auto — Luxury Automotive Accessories & Parts',
     description:
       'Bespoke ambient lighting, dry carbon fiber aerodynamics, high-fidelity audio, and precision performance accessories.',
-    images: ['/logo.svg'],
+    images: ['/logo.png'],
     creator: '@kravionauto',
   },
   robots: {
@@ -103,12 +103,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: '48x48 32x32 16x16' },
+      { url: '/icon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: '32x32' },
-      { url: '/logo.svg', type: 'image/svg+xml' },
     ],
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 };
 
@@ -117,8 +121,8 @@ const organizationJsonLd = {
   '@type': 'AutoPartsStore',
   name: 'Kravion Auto',
   url: baseUrl,
-  logo: `${baseUrl}/logo.svg`,
-  image: `${baseUrl}/logo.svg`,
+  logo: `${baseUrl}/logo.png`,
+  image: `${baseUrl}/logo.png`,
   description:
     'Bespoke ambient lighting, dry carbon fiber aerodynamics, high-fidelity audio, and precision performance accessories with guaranteed vehicle fitment.',
   priceRange: '₹₹₹₹',
