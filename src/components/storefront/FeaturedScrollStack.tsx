@@ -8,6 +8,8 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useGarage } from '@/context/GarageContext';
 import { checkCompatibility } from '@/lib/compatibility';
+import { getStoreSettings } from '@/lib/data-service';
+import { sanitizePhoneNumber } from '@/lib/whatsapp';
 import ScrollStack, { ScrollStackItem } from '@/components/ui/ScrollStack';
 import {
   ShoppingBag,
@@ -33,6 +35,42 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
   const { selectedVehicle, isHydrated, openGarageModal } = useGarage();
   const [addedMap, setAddedMap] = useState<Record<string, boolean>>({});
   const [isMobile, setIsMobile] = useState(false);
+  const [whatsappPhone, setWhatsappPhone] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = window.localStorage.getItem('kravion_store_settings');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          const raw = parsed.whatsappRecipientNumber || parsed.whatsappNumber;
+          if (raw) return sanitizePhoneNumber(raw);
+        }
+      } catch {}
+    }
+    return (
+      sanitizePhoneNumber(process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '') ||
+      '917902962326'
+    );
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    getStoreSettings()
+      .then((settings) => {
+        if (!isMounted) return;
+        const liveNum =
+          settings.whatsappRecipientNumber || (settings as any).whatsappNumber;
+        if (liveNum) {
+          const sanitized = sanitizePhoneNumber(liveNum);
+          if (sanitized) setWhatsappPhone(sanitized);
+        }
+      })
+      .catch((err) =>
+        console.warn('Could not load live store settings in FeaturedScrollStack:', err)
+      );
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -109,8 +147,8 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
               product.inStock !== false &&
               (product.stockQuantity === undefined || product.stockQuantity > 0);
 
-            const defaultPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE?.replace(/[^\d]/g, '') || '917902962326';
-            const whatsappEnquiryUrl = `https://wa.me/${defaultPhone}?text=${encodeURIComponent(
+            const targetPhone = whatsappPhone || '917902962326';
+            const whatsappEnquiryUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(
               `Hello Kravion Auto! I'm interested in "${product.title}" (SKU: ${
                 product.sku || 'N/A'
               }, Price: ₹${product.price.toLocaleString('en-IN')}). Can you confirm vehicle fitment?`

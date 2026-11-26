@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types';
@@ -9,6 +9,8 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { checkCompatibility } from '@/lib/compatibility';
 import { ProductCard } from '@/components/storefront/ProductCard';
+import { getStoreSettings } from '@/lib/data-service';
+import { sanitizePhoneNumber } from '@/lib/whatsapp';
 import {
   CheckCircle2,
   AlertTriangle,
@@ -89,11 +91,50 @@ export function ProductDetailClient({
         }))
       : []);
 
+  // Dynamic WhatsApp Phone Number state (loaded from live admin settings or env)
+  const [whatsappPhone, setWhatsappPhone] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = window.localStorage.getItem('kravion_store_settings');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          const raw = parsed.whatsappRecipientNumber || parsed.whatsappNumber;
+          if (raw) return sanitizePhoneNumber(raw);
+        }
+      } catch {}
+    }
+    return (
+      sanitizePhoneNumber(process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '') ||
+      '917902962326'
+    );
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    getStoreSettings()
+      .then((settings) => {
+        if (!isMounted) return;
+        const liveNum =
+          settings.whatsappRecipientNumber || (settings as any).whatsappNumber;
+        if (liveNum) {
+          const sanitized = sanitizePhoneNumber(liveNum);
+          if (sanitized) setWhatsappPhone(sanitized);
+        }
+      })
+      .catch((err) =>
+        console.warn('Could not load live store settings on product detail:', err)
+      );
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // WhatsApp Enquiry Link
   const enquiryMessage = encodeURIComponent(
     `Hello Kravion Auto Concierge! I have a question regarding: "${product.title}" (SKU: ${product.sku || 'N/A'}, Price: ₹${product.price}). Can you verify fitment for my vehicle?`
   );
-  const whatsappEnquiryUrl = `https://wa.me/1234567890?text=${enquiryMessage}`;
+  const cleanRecipientPhone = whatsappPhone || '917902962326';
+  const whatsappEnquiryUrl = `https://wa.me/${cleanRecipientPhone}?text=${enquiryMessage}`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8 sm:space-y-12 pb-32 md:pb-12 font-sans">
