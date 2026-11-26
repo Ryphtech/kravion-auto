@@ -1136,8 +1136,8 @@ export const initialPosters: CarouselPoster[] = [
 
 export const initialSettings: StoreSettings = {
   storeName: 'Kravion Auto',
-  contactPhone: '+1234567890',
-  whatsappRecipientNumber: '+1234567890',
+  contactPhone: '+91 7902962326',
+  whatsappRecipientNumber: '917902962326',
   supportEmail: 'support@kravionauto.com',
   currency: 'INR',
   currencySymbol: '₹',

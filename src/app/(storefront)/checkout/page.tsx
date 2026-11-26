@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useGarage } from '@/context/GarageContext';
-import { createOrderEnquiry } from '@/lib/data-service';
+import { createOrderEnquiry, getStoreSettings } from '@/lib/data-service';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -52,6 +52,13 @@ export default function CheckoutPage() {
       router.push('/login?redirect=/checkout');
     }
   }, [user, authLoading, router]);
+
+  // Load live store settings to ensure latest admin WhatsApp number is cached
+  useEffect(() => {
+    getStoreSettings().catch((err) =>
+      console.warn('Could not load live store settings on checkout:', err)
+    );
+  }, []);
 
   // Pre-fill user data
   useEffect(() => {

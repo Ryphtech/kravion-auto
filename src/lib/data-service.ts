@@ -362,12 +362,27 @@ export async function createOrderEnquiry(
     createdAt: new Date().toISOString(),
   };
 
+  // Fetch live store settings from Firestore / cache to guarantee admin's latest WhatsApp number is used
+  let activeSettings = inMemorySettings;
+  try {
+    const liveSettings = await getStoreSettings();
+    if (liveSettings) {
+      activeSettings = { ...inMemorySettings, ...liveSettings };
+      inMemorySettings = activeSettings;
+    }
+  } catch (settingsError) {
+    console.warn('Could not fetch live settings for order enquiry, using in-memory settings:', settingsError);
+  }
+
   const recipientPhone =
+    activeSettings.whatsappRecipientNumber ||
+    (activeSettings as any).whatsappNumber ||
     inMemorySettings.whatsappRecipientNumber ||
     (inMemorySettings as any).whatsappNumber ||
     process.env.NEXT_PUBLIC_WHATSAPP_PHONE ||
     '919876543210';
 
+  enquiry.currency = activeSettings.currency || inMemorySettings.currency || 'INR';
   enquiry.whatsappUrl = formatWhatsAppOrderUrl(enquiry, recipientPhone);
 
   // Commit to in-memory state first
@@ -562,10 +577,26 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     const docRef = doc(db, 'settings', 'store');
     const snap = await getDoc(docRef);
     if (snap.exists()) {
-      return { ...inMemorySettings, ...snap.data() } as StoreSettings;
+      const liveData = snap.data() as StoreSettings;
+      inMemorySettings = { ...inMemorySettings, ...liveData };
+      if (typeof window !== 'undefined') {
+        try {
+          window.localStorage.setItem('kravion_store_settings', JSON.stringify(inMemorySettings));
+        } catch {}
+      }
+      return inMemorySettings;
     }
   } catch (error) {
-    // Fallback to in-memory
+    // Fallback to in-memory / localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = window.localStorage.getItem('kravion_store_settings');
+        if (cached) {
+          inMemorySettings = { ...inMemorySettings, ...JSON.parse(cached) };
+          return inMemorySettings;
+        }
+      } catch {}
+    }
   }
 
   return { ...inMemorySettings };
@@ -578,6 +609,11 @@ export async function updateStoreSettings(
   settings: Partial<StoreSettings>
 ): Promise<StoreSettings> {
   inMemorySettings = { ...inMemorySettings, ...settings };
+  if (typeof window !== 'undefined') {
+    try {
+      window.localStorage.setItem('kravion_store_settings', JSON.stringify(inMemorySettings));
+    } catch {}
+  }
 
   try {
     const docRef = doc(db, 'settings', 'store');

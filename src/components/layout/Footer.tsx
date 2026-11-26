@@ -74,7 +74,7 @@ export function Footer() {
           </p>
           <div className="pt-2">
             <a
-              href="https://wa.me/1234567890?text=Hello%20Kravion%20Auto,%20I%20have%20an%20enquiry%20regarding%20vehicle%20fitment."
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE?.replace(/[^\d]/g, '') || '917902962326'}?text=${encodeURIComponent('Hello Kravion Auto, I have an enquiry regarding vehicle fitment.')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 text-xs font-bold transition-colors shadow-sm"

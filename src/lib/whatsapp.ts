@@ -7,7 +7,12 @@ export const DEFAULT_WHATSAPP_PHONE = '919876543210';
  */
 export function sanitizePhoneNumber(phone: string): string {
   if (!phone) return '';
-  return String(phone).replace(/[^\d]/g, '');
+  let digits = String(phone).replace(/[^\d]/g, '');
+  // If a 10-digit Indian mobile number is supplied without country code, prefix 91
+  if (digits.length === 10 && /^[6-9]/.test(digits)) {
+    return `91${digits}`;
+  }
+  return digits;
 }
 
 /**

@@ -77,7 +77,10 @@ export default function AdminSettingsPage() {
       return;
     }
 
-    const cleanWaPhone = whatsappNumber.replace(/[^\d]/g, '');
+    let cleanWaPhone = whatsappNumber.replace(/[^\d]/g, '');
+    if (cleanWaPhone.length === 10 && /^[6-9]/.test(cleanWaPhone)) {
+      cleanWaPhone = `91${cleanWaPhone}`;
+    }
     if (!cleanWaPhone || cleanWaPhone.length < 8) {
       showNotification('error', 'Please enter a valid WhatsApp phone number with country code.');
       return;
@@ -108,7 +111,10 @@ export default function AdminSettingsPage() {
   };
 
   const handleTestWhatsApp = () => {
-    const cleanPhone = whatsappNumber.replace(/[^\d]/g, '');
+    let cleanPhone = whatsappNumber.replace(/[^\d]/g, '');
+    if (cleanPhone.length === 10 && /^[6-9]/.test(cleanPhone)) {
+      cleanPhone = `91${cleanPhone}`;
+    }
     if (!cleanPhone) {
       showNotification('error', 'Enter a valid WhatsApp phone number first.');
       return;
@@ -246,7 +252,15 @@ export default function AdminSettingsPage() {
               </button>
             </div>
             <p className="text-[11px] text-slate-500">
-              Target URL format: <span className="font-mono text-slate-700">https://wa.me/{whatsappNumber.replace(/[^\d]/g, '') || '[PHONE]'}?text=...</span>
+              Target URL format:{' '}
+              <span className="font-mono text-slate-700">
+                https://wa.me/
+                {(() => {
+                  const p = whatsappNumber.replace(/[^\d]/g, '');
+                  return (p.length === 10 && /^[6-9]/.test(p) ? `91${p}` : p) || '[PHONE]';
+                })()}
+                ?text=...
+              </span>
             </p>
           </div>
         </div>

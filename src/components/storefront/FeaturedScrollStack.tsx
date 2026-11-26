@@ -109,7 +109,8 @@ export function FeaturedScrollStack({ products }: FeaturedScrollStackProps) {
               product.inStock !== false &&
               (product.stockQuantity === undefined || product.stockQuantity > 0);
 
-            const whatsappEnquiryUrl = `https://wa.me/1234567890?text=${encodeURIComponent(
+            const defaultPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE?.replace(/[^\d]/g, '') || '917902962326';
+            const whatsappEnquiryUrl = `https://wa.me/${defaultPhone}?text=${encodeURIComponent(
               `Hello Kravion Auto! I'm interested in "${product.title}" (SKU: ${
                 product.sku || 'N/A'
               }, Price: ₹${product.price.toLocaleString('en-IN')}). Can you confirm vehicle fitment?`
